@@ -4,7 +4,8 @@
 import color from 'tiny-colors';
 import {KEY} from '../constants';
 import {identity, isPrintable, isString} from '../utils';
-import prompt, {renderStatus} from './prompt';
+import {statusSymbol} from './_helpers';
+import prompt from './prompt';
 
 /* TYPES */
 
@@ -33,7 +34,7 @@ const input = <T> ( options: Options<T> ): Promise<T | undefined> => {
   /* COMPONENTS */
 
   const main = (): string => {
-    const _status = renderStatus ( status );
+    const _status = statusSymbol ( status );
     const _message = color.bold ( message );
     const _initial = status === 0 && pristine && initial ? color.dim ( `(${initial})` ) : false;
     const _value = status >= 0 ? format ( value, status ) : '';

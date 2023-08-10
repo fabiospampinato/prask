@@ -3,7 +3,8 @@
 
 import color from 'tiny-colors';
 import {KEY} from '../constants';
-import prompt, {renderStatus} from './prompt';
+import {statusSymbol} from './_helpers';
+import prompt from './prompt';
 
 /* TYPES */
 
@@ -35,7 +36,7 @@ const rating = ( options: Options ): Promise<Rating | undefined> => {
   /* COMPONENTS */
 
   const question = (): string => {
-    const question = `${renderStatus ( status )} ${color.bold ( message )}`;
+    const question = `${statusSymbol ( status )} ${color.bold ( message )}`;
     const result = status === 1 ? color.cyan ( String ( current ) ) : '';
     return [question, result].join ( ' ' );
   };

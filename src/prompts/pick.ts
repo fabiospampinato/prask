@@ -4,7 +4,8 @@
 import color from 'tiny-colors';
 import {KEY} from '../constants';
 import {identity, isPrintable} from '../utils';
-import prompt, {renderStatus} from './prompt';
+import {statusSymbol} from './_helpers';
+import prompt from './prompt';
 
 /* HELPERS */
 
@@ -51,7 +52,7 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
   /* COMPONENTS */
 
   const main = (): string => {
-    const _status = renderStatus ( status );
+    const _status = statusSymbol ( status );
     const _message = color.bold ( message );
     const _query = status >= 0 ? format ( query, status ) : '';
     return [_status, _message, _query].join ( ' ' );

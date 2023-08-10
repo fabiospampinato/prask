@@ -17,17 +17,9 @@ type Prompt<T> = {
   render ( resolve: ( value?: T ) => void, key: string ): Line[] | Line
 };
 
-/* HELPERS */
 
 //FIXME: flickering
 //FIXME: cursor position on validation error
-
-const renderStatus = ( status: number ): string => {
-  if ( status < 0 ) return color.red ( '✖' );
-  if ( status > 0 ) return color.green ( '✔' );
-  return color.cyan ( color.bold ( '?' ) );
-};
-
 /* MAIN */
 
 const onData = (): Promise<string> => {
