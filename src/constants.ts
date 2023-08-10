@@ -2,6 +2,7 @@
 /* MAIN */
 
 //TODO: List more special keys here, maybe some key combinations also
+//TODO: Figure out how to make it perfect, and publish it as a standalone package
 
 const KEY = {
   /* FUNCTION KEYS */

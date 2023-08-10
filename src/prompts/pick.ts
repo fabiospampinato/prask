@@ -86,7 +86,8 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
   /* PROMPT */
 
   return prompt ({
-    render ( resolve, key ) {
+    cursor: searchable ? 0 : false,
+    render: ( resolve, key ) => {
       if ( key === KEY.ESCAPE ) {
         status = -1;
         resolve ();

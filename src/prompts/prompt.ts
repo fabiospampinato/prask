@@ -1,11 +1,12 @@
 
 /* IMPORT */
 
-import color from 'tiny-colors';
-import cursor from 'tiny-cursor';
+import purge from 'ansi-purge';
+import Cursor from 'tiny-cursor';
 import process from 'node:process';
 import readline from 'node:readline';
-import {castArray, isString} from '../utils';
+import Stdin from '../stdin';
+import {castArray, isFunction, isNumber, isString} from '../utils';
 
 /* TYPES */
 
@@ -14,55 +15,20 @@ type Line = {
 };
 
 type Prompt<T> = {
-  render ( resolve: ( value?: T ) => void, key: string ): Line[] | Line
+  cursor?: (() => void) | number | false,
+  render: ( resolve: ( value?: T ) => void, key: string ) => Line[] | Line
 };
 
-
-//FIXME: flickering
-//FIXME: cursor position on validation error
 /* MAIN */
 
-const onData = (): Promise<string> => {
-
-  return new Promise ( resolve => {
-
-    process.stdin.setRawMode ( true );
-    process.stdin.resume ();
-    process.stdin.setEncoding ( 'utf8' );
-
-    process.stdin.on ( 'data', ( key: string ) => {
-
-      if ( key === '\x03' ) process.exit ( 1 );
-
-      resolve ( key );
-
-    });
-
-    process.on ( 'SIGINT', () => {
-
-      process.exit ( 1 );
-
-    });
-
-  });
-
-};
-
-const onClose = (): void => {
-
-  process.stdout.write ( '\r\n' ); // Removes the trailing `%`
-  process.stdin.setRawMode ( false );
-  process.stdin.pause ();
-
-  cursor.show ();
-
-};
+//FIXME: flickering
+//TODO: Rewrite this whole module, it's pretty ugly
 
 /* MAIN */
 
 const prompt = <T> ( prompt: Prompt<T> ): Promise<T | undefined> => {
 
-  return new Promise<T> ( async ( res, rej ) => {
+  return new Promise<T> ( async res => {
 
     /* HELPERS */
 
@@ -73,56 +39,65 @@ const prompt = <T> ( prompt: Prompt<T> ): Promise<T | undefined> => {
       res ( value );
     };
 
-    const reject = ( error: Error ) => {
-      settled = true;
-      rej ( error );
-    };
-
     /* STATE */
 
-    let linesPrev: number = 0;
+    let lineCursor = 0;
+    let linesPrev = 0;
     let key = '';
 
     while ( true ) {
 
-      const linesNext = castArray ( prompt.render ( resolve, key ) ).map ( line => line () ).filter ( isString );
+      /* RESET CURSOR */
 
-      /* CLEAR */
-
-      for ( let i = 0; i < linesPrev; i++ ) {
-        if ( i ) readline.moveCursor ( process.stdout, 0, -1 );
-        readline.cursorTo ( process.stdout, 0 );
-        readline.clearLine ( process.stdout, 1 );
+      for ( let i = lineCursor; i > 0; i-- ) {
+        readline.moveCursor ( process.stdout, 0, -1 );
       }
 
-      // for ( let i = 0, l = linesPrev.length; i < l; i++ ) {
-      //   readline.cursorTo ( process.stdout, 0 );
-      //   readline.clearLine ( process.stdout, 0 );
-      // }
+      readline.cursorTo ( process.stdout, 0 );
 
-      // readline.clearScreenDown ( process.stdout );
+      /* RESET SCREEN */
+
+      readline.clearScreenDown ( process.stdout );
 
       /* PRINT */
 
-      linesPrev = 0;
+      const linesNext = castArray ( prompt.render ( resolve, key ) ).map ( line => line () ).filter ( isString );
+
       for ( let i = 0, l = linesNext.length; i < l; i++ ) {
         const line = linesNext[i];
-        linesPrev += 1;
         process.stdout.write ( line );
-        if ( i < l - 1 ) process.stdout.write ( '\n' );
+        if ( i < l - 1 ) Stdin.newline ();
       }
+
+      linesPrev = linesNext.length;
+      lineCursor = linesNext.length - 1;
+
+      /* EXIT */
+
+      if ( settled ) break;
 
       /* CURSOR */
 
-      /* WAIT */
+      if ( isNumber ( prompt.cursor ) ) {
+        for ( let i = linesNext.length - 1; i > 0; i-- ) {
+          readline.moveCursor ( process.stdout, 0, -1 );
+        }
+        readline.cursorTo ( process.stdout, purge ( linesNext[prompt.cursor] ).length );
+        lineCursor = prompt.cursor;
+      } else if ( isFunction ( prompt.cursor ) ) {
+        prompt.cursor ();
+      } else {
+        Cursor.hide ();
+      }
 
-      if ( settled ) break;
-      key = await onData ();
-      if ( settled ) break;
+      /* NEXT */
+
+      key = await Stdin.next ();
 
     }
 
-    onClose ();
+    Stdin.newline ();
+    Cursor.show ();
 
   });
 
@@ -131,4 +106,3 @@ const prompt = <T> ( prompt: Prompt<T> ): Promise<T | undefined> => {
 /* EXPORT */
 
 export default prompt;
-export {renderStatus};

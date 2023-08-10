@@ -22,6 +22,7 @@
     "select"
   ],
   "dependencies": {
+    "ansi-purge": "^1.0.0",
     "tiny-colors": "^2.0.2",
     "tiny-cursor": "^2.0.0",
     "tiny-spinner": "^2.0.0"

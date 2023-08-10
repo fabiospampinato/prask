@@ -52,7 +52,8 @@ const input = <T> ( options: Options<T> ): Promise<T | undefined> => {
   /* PROMPT */
 
   return prompt ({
-    render ( resolve, key ) {
+    cursor: 0,
+    render: ( resolve, key ) => {
       if ( key === KEY.ESCAPE ) {
         pristine = false;
         status = -1;

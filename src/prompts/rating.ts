@@ -59,7 +59,7 @@ const rating = ( options: Options ): Promise<Rating | undefined> => {
   /* PROMPT */
 
   return prompt ({
-    render ( resolve, key ) {
+    render: ( resolve, key ) => {
       if ( key === KEY.ESCAPE ) {
         status = -1;
         resolve ();
