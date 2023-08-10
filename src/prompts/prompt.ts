@@ -47,12 +47,13 @@ const prompt = <T> ( prompt: Prompt<T> ): Promise<T | undefined> => {
 
     while ( true ) {
 
+      /* HIDING CURSOR */
+
+      Cursor.hide ();
+
       /* RESET CURSOR */
 
-      for ( let i = lineCursor; i > 0; i-- ) {
-        readline.moveCursor ( process.stdout, 0, -1 );
-      }
-
+      readline.moveCursor ( process.stdout, 0, -lineCursor );
       readline.cursorTo ( process.stdout, 0 );
 
       /* RESET SCREEN */
@@ -61,13 +62,10 @@ const prompt = <T> ( prompt: Prompt<T> ): Promise<T | undefined> => {
 
       /* PRINT */
 
-      const linesNext = castArray ( prompt.render ( resolve, key ) ).map ( line => line () ).filter ( isString );
+      const linesNext = castArray ( prompt.render ( resolve, key ) ).map ( line => line () ).filter ( isString ) // .map ( ( line, i ) => line.padEnd ( 20, ' ' ) );
+      const output = linesNext.join ( '\r\n' );
 
-      for ( let i = 0, l = linesNext.length; i < l; i++ ) {
-        const line = linesNext[i];
-        process.stdout.write ( line );
-        if ( i < l - 1 ) Stdin.newline ();
-      }
+      process.stdout.write ( output );
 
       linesPrev = linesNext.length;
       lineCursor = linesNext.length - 1;
@@ -79,13 +77,13 @@ const prompt = <T> ( prompt: Prompt<T> ): Promise<T | undefined> => {
       /* CURSOR */
 
       if ( isNumber ( prompt.cursor ) ) {
-        for ( let i = linesNext.length - 1; i > 0; i-- ) {
-          readline.moveCursor ( process.stdout, 0, -1 );
-        }
+        readline.moveCursor ( process.stdout, 0, -lineCursor );
         readline.cursorTo ( process.stdout, purge ( linesNext[prompt.cursor] ).length );
         lineCursor = prompt.cursor;
+        Cursor.show ();
       } else if ( isFunction ( prompt.cursor ) ) {
         prompt.cursor ();
+        Cursor.show ();
       } else {
         Cursor.hide ();
       }
