@@ -27,7 +27,8 @@ type Options<T, U> = {
 type Option<T> = {
   title: string,
   value: T,
-  disabled?: boolean
+  disabled?: boolean,
+  selected?: boolean
 };
 
 /* MAIN */
@@ -47,7 +48,7 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
   let cursor = 0;
   let validating = false;
   let filtered: Option<T>[] = options;
-  let selected: Set<Option<T>> = new Set ();
+  let selected: Set<Option<T>> = new Set ( filtered.filter ( option => option.selected ) );
   let visible = filtered.slice ( 0, limit );
   let focused = Math.max ( 0, Math.min ( visible.length - 1, _options.focused || 0 ) ); //TODO: Calculate the initial visible range based on this value
 
