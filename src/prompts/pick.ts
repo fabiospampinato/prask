@@ -1,6 +1,7 @@
 
 /* IMPORT */
 
+import process from 'node:process';
 import color from 'tiny-colors';
 import {KEY} from '../constants';
 import {identity, isPrintable} from '../utils';
@@ -34,13 +35,13 @@ type Option<T> = {
 //TODO: Support values with a description
 //TODO: Support values that are headings
 //TODO: Account for pre-colored searchable values
-//TODO: Account for the terminal's height when setting the limit
 
 const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> => {
 
   /* STATE */
 
-  let {message, limit = 7, min = 0, max = Infinity, multiple = true, searchable = true, options, focused: _focused, format = identity, transform = identity, validate} = _options;
+  let {message, min = 0, max = Infinity, multiple = true, searchable = true, options, focused: _focused, format = identity, transform = identity, validate} = _options;
+  let limit = Math.min ( process.stdout.getWindowSize ()[1] - 2, _options.limit || 7 ); // Ensuring the prompt won't overflow the terminal
   let status: -1 | 0 | 1 = 0;
   let query = '';
   let cursor = 0;
