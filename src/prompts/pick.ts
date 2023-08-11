@@ -98,7 +98,7 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
       status = -1;
       resolve ();
       return main;
-    } else if ( key === KEY.ENTER ) {
+    } else if ( key === KEY.ENTER || ( key === KEY.SPACE && !multiple ) ) {
       const option = filtered[focused];
       selected = multiple || !option || option.disabled || option.heading ? selected : new Set ([ option ]);
       validating = true;

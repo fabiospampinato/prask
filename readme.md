@@ -178,7 +178,7 @@ const result = await select ({
 });
 ```
 
-It can be interacted with exactly like a `multiselect` prompt, except that `Space` is handled literally.
+It can be interacted with exactly like a `multiselect` prompt.
 
 #### `boolean`
 
