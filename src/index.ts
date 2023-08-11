@@ -11,7 +11,8 @@ import rating from './prompts/rating';
 import select from './prompts/select';
 import spinner from './prompts/spinner';
 import string from './prompts/string';
+import toggle from './prompts/toggle';
 
 /* EXPORT */
 
-export {boolean, invisible, multiselect, number, password, prompt, rating, select, spinner, string};
+export {boolean, invisible, multiselect, number, password, prompt, rating, select, spinner, string, toggle};
