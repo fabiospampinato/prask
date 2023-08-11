@@ -10,21 +10,15 @@ npm install --save prask
 
 ## Prompts
 
-| [Input](#input-prompts) | [Selection](#selection-prompts) | [Others](#other-prompts) |
-| ----------------------- | ------------------------------- | ------------------------ |
-| [string](#string)       | [multiselect](#multiselect)     | [prompt](#prompt)        |
-| [invisible](#invisible) | [select](#select)               | [spinner](#spinner)      |
-| [password](#password)   | [boolean](#boolean)             |                          |
-| [number](#number)       | [toggle](#toggle)               |                          |
-|                         | [rating](#rating)               |                          |
+| Input                   | Selection                   | Others              |
+| ----------------------- | --------------------------- | ------------------- |
+| [string](#string)       | [multiselect](#multiselect) | [prompt](#prompt)   |
+| [invisible](#invisible) | [select](#select)           | [spinner](#spinner) |
+| [password](#password)   | [boolean](#boolean)         |                     |
+| [number](#number)       | [toggle](#toggle)           |                     |
+|                         | [rating](#rating)           |                     |
 
-## Usage
-
-### Input Prompts
-
-The following input prompts are provided, they all require the user to write something.
-
-#### `string`
+### `string`
 
 <p align="center">
   <img src="./resources/demo_string.gif" alt="Demo" width="662">
@@ -52,7 +46,7 @@ Interactions:
 | `Enter` | Submit the value, or the initial value if visible, checking if it's valid first. |
 | `Tab`   | Edit the initial value, if visible.                                              |
 
-#### `invisible`
+### `invisible`
 
 <p align="center">
   <img src="./resources/demo_invisible.gif" alt="Demo" width="662">
@@ -74,7 +68,7 @@ const result = await invisible ({
 
 It can be interacted with exactly like a `string` prompt, the only difference is that the value is invisible.
 
-#### `password`
+### `password`
 
 <p align="center">
   <img src="./resources/demo_password.gif" alt="Demo" width="662">
@@ -96,7 +90,7 @@ const result = await password ({
 
 It can be interacted with exactly like a `string` prompt, the only difference is that every character in the value will be replaced with an asterisk.
 
-#### `number`
+### `number`
 
 <p align="center">
   <img src="./resources/demo_number.gif" alt="Demo" width="662">
@@ -118,11 +112,7 @@ const result = await number ({
 
 It can be interacted with exactly like a `string` prompt, the only difference is that the value of the input is also automatically validated to be a number.
 
-### Selection Prompts
-
-The following input prompts are provided, they all require the user to select something.
-
-#### `multiselect`
+### `multiselect`
 
 <p align="center">
   <img src="./resources/demo_multiselect.gif" alt="Demo" width="662">
@@ -177,7 +167,7 @@ Interactions:
 | `Down`  | Move the focus to the next item, and potentially scroll to the next page.              |
 | `*`     | All other keys will be used to edit the search query, which will filter down the list. |
 
-#### `select`
+### `select`
 
 <p align="center">
   <img src="./resources/demo_select.gif" alt="Demo" width="662">
@@ -205,7 +195,7 @@ const result = await select ({
 
 It can be interacted with exactly like a `multiselect` prompt.
 
-#### `boolean`
+### `boolean`
 
 <p align="center">
   <img src="./resources/demo_boolean.gif" alt="Demo" width="662">
@@ -226,7 +216,7 @@ const result = await boolean ({
 
 It can be interacted with exactly like a `select` prompt, except that search is turned off for it.
 
-#### `toggle`
+### `toggle`
 
 <p align="center">
   <img src="./resources/demo_toggle.gif" alt="Demo" width="662">
@@ -253,7 +243,7 @@ Interactions:
 | `Enter`              | Submit the selected option.                         |
 | `Left`/`Right`/`Tab` | Select the other option.                            |
 
-#### `rating`
+### `rating`
 
 <p align="center">
   <img src="./resources/demo_rating.gif" alt="Demo" width="662">
@@ -281,11 +271,7 @@ Interactions:
 | `Right`/`Up`  | Increment the selected rating.                      |
 | `Left`/`Down` | Decrement the selected rating.                      |
 
-### Other Prompts
-
-The following extra functions are provided, they enable more advanced uses cases than just asking the user for something.
-
-#### `prompt`
+### `prompt`
 
 This is a low-level general prompt, which is used internally to implement the other higher-level prompts, and which you can use to implement your own custom prompts.
 
@@ -380,7 +366,7 @@ const rating = ( options: Options ): Promise<Rating | undefined> => {
 };
 ```
 
-#### `spinner`
+### `spinner`
 
 <p align="center">
   <img src="./resources/demo_spinner.gif" alt="Demo" width="662">
