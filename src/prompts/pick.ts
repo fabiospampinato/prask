@@ -148,6 +148,9 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
     } else if ( key === KEY.DELETE && searchable ) {
       query = `${query.slice ( 0, cursor )}${query.slice ( cursor + 1 )}`;
       cursor = Math.min ( query.length, cursor );
+      filtered = options.filter ( option => option.title.toLowerCase ().includes ( query.toLowerCase () ) );
+      visible = filtered.slice ( 0, limit );
+      focused = 0;
     } else if ( isPrintable ( key ) && searchable ) {
       query = `${query.slice ( 0, cursor )}${key}${query.slice ( cursor )}`;
       cursor = Math.min ( query.length, cursor + 1 );
