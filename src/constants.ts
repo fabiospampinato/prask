@@ -26,6 +26,9 @@ const KEY = {
   // PAGEUP: '',
   TAB: '\t',
   SPACE: ' ',
+  /* SHORTCUTS */
+  CTRL_A: '\x01',
+  CTRL_E: '\x05'
 };
 
 /* EXPORT */
