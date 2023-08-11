@@ -129,6 +129,22 @@ const result = await multiselect ({
 });
 ```
 
+Each option must have the following shape:
+
+```ts
+type Option<T> = {
+  /* REQUIRED VALUES */
+  title: string, // The name of the option that will be showed to the user
+  value: T, // The value of the option that the prompt will return you when this option is selected
+  /* OPTIONAL VALUES */
+  disabled?: boolean, // Whether this option can be changed or not
+  description?: string, // The description that will be showed next to the title
+  heading?: boolean, // Whether this option is an unselectable heading or not
+  hint?: string, // The description that will be showed next to the title, only when the item is focused
+  selected?: boolean // Whether this option is pre-selected or not
+};
+```
+
 Interactions:
 
 | Trigger | Description                                                                            |

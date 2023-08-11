@@ -14,6 +14,8 @@ type Options = {
 
 /* MAIN */
 
+//TODO: Support incrementing/decrementing the value with up/down arrows
+
 const number = async ( options: Options ): Promise<number | undefined> => {
 
   return input ({
