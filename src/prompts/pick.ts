@@ -28,13 +28,14 @@ type Option<T> = {
   title: string,
   value: T,
   disabled?: boolean,
+  heading?: boolean,
   selected?: boolean
 };
 
 /* MAIN */
 
+//TODO: Make sure headings are not selectable
 //TODO: Support values with a description
-//TODO: Support values that are headings
 //TODO: Account for pre-colored searchable values
 
 const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> => {
@@ -48,7 +49,7 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
   let cursor = 0;
   let validating = false;
   let filtered: Option<T>[] = options;
-  let selected: Set<Option<T>> = new Set ( filtered.filter ( option => option.selected ) );
+  let selected: Set<Option<T>> = new Set ( filtered.filter ( option => !option.heading && option.selected ) );
   let visible = filtered.slice ( 0, limit );
   let focused = Math.max ( 0, Math.min ( visible.length - 1, _options.focused || 0 ) ); //TODO: Calculate the initial visible range based on this value
 
@@ -66,10 +67,10 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
     return (): string => {
       const isSelected = selected.has ( option );
       const isFocused = ( filtered[focused] === option );
-      const _status = multiple ? ( isSelected ? color.green ( '●' ) : '○' ) : ( isFocused ? color.cyan ( '❯' ) : ' ' );
+      const _status = option.heading ? ' ' : ( multiple ? ( isSelected ? color.green ( '●' ) : '○' ) : ( isFocused ? color.cyan ( '❯' ) : ' ' ) );
       const _matchStart = option.title.toLowerCase ().indexOf ( query.toLowerCase () );
       const _matchEnd = _matchStart + query.length;
-      const _match = query && _matchStart >= 0 ? `${option.title.slice ( 0, _matchStart )}${color.inverse ( option.title.slice ( _matchStart, _matchEnd ) )}${option.title.slice ( _matchEnd )}` : option.title;
+      const _match = query && _matchStart >= 0 && !option.heading ? `${option.title.slice ( 0, _matchStart )}${color.inverse ( option.title.slice ( _matchStart, _matchEnd ) )}${option.title.slice ( _matchEnd )}` : option.title;
       const _title = isFocused ? color.underline ( option.disabled ? color.dim ( color.strikethrough ( _match ) ) : color.cyan ( _match ) ) : ( option.disabled ? color.dim ( color.strikethrough ( _match ) ) : _match );
       return [_status, _title].join ( ' ' );
     };
@@ -95,24 +96,25 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
       resolve ();
       return main;
     } else if ( key === KEY.ENTER ) {
-      selected = multiple ? selected : new Set ([ filtered[focused] ]);
+      const option = filtered[focused];
+      selected = multiple || !option || option.disabled || option.heading ? selected : new Set ([ option ]);
       validating = true;
       if ( !validation () ) {
         const results = options.filter ( option => selected.has ( option ) ); // To preserve the original order
-        const titles = results.map ( choice => choice.title );
-        const values = results.map ( choice => choice.value );
+        const titles = results.map ( option => option.title );
+        const values = results.map ( option => option.value );
         status = 1;
         query = titles.join ( color.dim ( ', ' ) );
         resolve ( transform ( values as any ) ); //TSC: Try to type this right
         return main;
       }
     } else if ( key === KEY.SPACE && multiple ) {
-      const choice = filtered[focused];
-      if ( !choice.disabled ) {
-        if ( selected.has ( choice ) ) {
-          selected.delete ( choice );
+      const option = filtered[focused];
+      if ( !option.disabled && !option.heading ) {
+        if ( selected.has ( option ) ) {
+          selected.delete ( option );
         } else {
-          selected.add ( choice );
+          selected.add ( option );
         }
       }
     } else if ( key === KEY.UP ) {
@@ -146,19 +148,19 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
     } else if ( key === KEY.BACKSPACE && searchable ) {
       query = `${query.slice ( 0, Math.max ( 0, cursor - 1 ) )}${query.slice ( cursor )}`;
       cursor = Math.max ( 0, cursor - 1 );
-      filtered = options.filter ( option => option.title.toLowerCase ().includes ( query.toLowerCase () ) );
+      filtered = options.filter ( option => option.heading || option.title.toLowerCase ().includes ( query.toLowerCase () ) );
       visible = filtered.slice ( 0, limit );
       focused = 0;
     } else if ( key === KEY.DELETE && searchable ) {
       query = `${query.slice ( 0, cursor )}${query.slice ( cursor + 1 )}`;
       cursor = Math.min ( query.length, cursor );
-      filtered = options.filter ( option => option.title.toLowerCase ().includes ( query.toLowerCase () ) );
+      filtered = options.filter ( option => option.heading || option.title.toLowerCase ().includes ( query.toLowerCase () ) );
       visible = filtered.slice ( 0, limit );
       focused = 0;
     } else if ( isPrintable ( key ) && searchable ) {
       query = `${query.slice ( 0, cursor )}${key}${query.slice ( cursor )}`;
       cursor = Math.min ( query.length, cursor + 1 );
-      filtered = filtered.filter ( option => option.title.toLowerCase ().includes ( query.toLowerCase () ) );
+      filtered = filtered.filter ( option => option.heading || option.title.toLowerCase ().includes ( query.toLowerCase () ) );
       visible = filtered.slice ( 0, limit );
       focused = 0;
     }
