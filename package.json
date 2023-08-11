@@ -25,7 +25,7 @@
     "promise-make-naked": "^2.1.1",
     "tiny-colors": "^2.0.2",
     "tiny-cursor": "^2.0.0",
-    "tiny-spinner": "^2.0.1"
+    "tiny-spinner": "^2.0.2"
   },
   "devDependencies": {
     "@types/node": "^20.4.9",
