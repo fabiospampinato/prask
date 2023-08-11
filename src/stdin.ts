@@ -33,6 +33,8 @@ const Stdin = {
 
         if ( key === KEY.CTRL_C ) {
 
+          Stdin.stop (); // If the process is about to exit we need to clear things up
+
           kill ( pid, 'SIGINT' ); // Manually emitting the "SIGINT" signal
 
         } else {
