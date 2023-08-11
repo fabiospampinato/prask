@@ -200,7 +200,7 @@ It can be interacted with exactly like a `select` prompt, except that search is 
 
 #### `toggle`
 
-This prompt caxn be used to ask the user to pick between yes and no, using a single line of output.
+This prompt can be used to ask the user to pick between yes and no, using a single line of output, rather than the three that `boolean` needs.
 
 ```ts
 import {toggle} from 'prask';
@@ -218,7 +218,7 @@ Interactions:
 | Trigger              | Description                                         |
 | -------------------- | --------------------------------------------------- |
 | `Esc`                | Quit the prompt, which will resolve to `undefined`. |
-| `Enter`              | Submit the selected value.                          |
+| `Enter`              | Submit the selected option.                         |
 | `Left`/`Right`/`Tab` | Select the other option.                            |
 
 #### `rating`
