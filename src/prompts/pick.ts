@@ -4,7 +4,7 @@
 import process from 'node:process';
 import color from 'tiny-colors';
 import {KEY} from '../constants';
-import {identity, isPrintable} from '../utils';
+import {identity, isPrintable, isString} from '../utils';
 import {statusSymbol, withCursor} from './_helpers';
 import prompt from './prompt';
 
@@ -28,14 +28,15 @@ type Option<T> = {
   title: string,
   value: T,
   disabled?: boolean,
+  description?: string,
   heading?: boolean,
+  hint?: string,
   selected?: boolean
 };
 
 /* MAIN */
 
 //TODO: Make sure headings are not selectable
-//TODO: Support values with a description
 //TODO: Account for pre-colored searchable values
 
 const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> => {
@@ -72,7 +73,9 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
       const _matchEnd = _matchStart + query.length;
       const _match = query && _matchStart >= 0 && !option.heading ? `${option.title.slice ( 0, _matchStart )}${color.inverse ( option.title.slice ( _matchStart, _matchEnd ) )}${option.title.slice ( _matchEnd )}` : option.title;
       const _title = isFocused ? color.underline ( option.disabled ? color.dim ( color.strikethrough ( _match ) ) : color.cyan ( _match ) ) : ( option.disabled ? color.dim ( color.strikethrough ( _match ) ) : _match );
-      return [_status, _title].join ( ' ' );
+      const _description = option.description ? color.dim ( option.description ) : false;
+      const _hint = option.hint && isFocused ? color.dim ( option.hint ) : false;
+      return [_status, _title, _description, _hint].filter ( isString ).join ( ' ' );
     };
   };
 
