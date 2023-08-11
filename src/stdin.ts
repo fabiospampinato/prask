@@ -2,6 +2,7 @@
 /* IMPORT */
 
 import {kill, pid, stdin} from 'node:process';
+import {KEY} from './constants';
 
 /* MAIN */
 
@@ -30,7 +31,7 @@ const Stdin = {
 
       stdin.once ( 'data', ( key: string ) => {
 
-        if ( key === '\x03' ) { // Ctrl+C
+        if ( key === KEY.CTRL_C ) {
 
           kill ( pid, 'SIGINT' ); // Manually emitting the "SIGINT" signal
 

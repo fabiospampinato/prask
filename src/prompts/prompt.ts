@@ -10,12 +10,12 @@ import {castArray, isString} from '../utils';
 
 /* TYPES */
 
-type Line = {
+type Component = {
   (): string | undefined
 };
 
 type Prompt<T> = (
-  ( resolve: ( value?: T ) => void, key: string ) => Line[] | Line
+  ( resolve: ( value?: T ) => void, key: string ) => Component[] | Component
 );
 
 /* MAIN */
@@ -31,23 +31,25 @@ const prompt = <T> ( prompt: Prompt<T> ): Promise<T | undefined> => {
 
     /* STATE */
 
-    let lineCursor = 0;
     let key = '';
+    let linesNr = 1;
+
+    /* RENDER LOOP */
 
     while ( true ) {
 
       /* RESET CURSOR */
 
-      readline.moveCursor ( process.stdout, 0, -lineCursor );
+      readline.moveCursor ( process.stdout, 0, - linesNr + 1 );
       readline.cursorTo ( process.stdout, 0 );
 
       /* RE-RENDER */
 
-      const linesNext = castArray ( prompt ( resolve, key ) ).map ( line => line () ).filter ( isString );
+      const lines = castArray ( prompt ( resolve, key ) ).map ( line => line () ).filter ( isString );
 
-      for ( let i = 0, l = linesNext.length; i < l; i++ ) {
+      for ( let i = 0, l = lines.length; i < l; i++ ) {
 
-        const lineNext = linesNext[i];
+        const lineNext = lines[i];
 
         process.stdout.write ( lineNext );
 
@@ -65,13 +67,13 @@ const prompt = <T> ( prompt: Prompt<T> ): Promise<T | undefined> => {
 
       }
 
-      lineCursor = linesNext.length - 1;
+      linesNr = lines.length;
 
-      /* EXIT */
+      /* SETTLED */
 
       if ( !isPending () ) break;
 
-      /* NEXT */
+      /* NEXT ITERATION */
 
       key = await Stdin.next ();
 
@@ -79,10 +81,12 @@ const prompt = <T> ( prompt: Prompt<T> ): Promise<T | undefined> => {
 
     /* RESET */
 
-    process.stdout.write ( '\r\n' );
-
     Stdin.stop ();
     Cursor.show ();
+
+    /* CLENAUP */
+
+    process.stdout.write ( '\r\n' );
 
   });
 

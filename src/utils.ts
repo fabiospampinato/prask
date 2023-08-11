@@ -23,18 +23,6 @@ const isArray = ( value: unknown ): value is unknown[] => {
 
 };
 
-const isFunction = ( value: unknown ): value is Function => {
-
-  return typeof value === 'function';
-
-};
-
-const isNumber = ( value: unknown ): value is number => {
-
-  return typeof value === 'number';
-
-};
-
 const isPrintable = ( key: string ): boolean => {
 
   return !!key && !key.startsWith ( KEY.ESCAPE );
@@ -47,12 +35,6 @@ const isString = ( value: unknown ): value is string => {
 
 };
 
-const isUndefined = ( value: unknown ): value is undefined => {
-
-  return value === undefined;
-
-};
-
 /* EXPORT */
 
-export {castArray, identity, isArray, isFunction, isNumber, isPrintable, isString, isUndefined};
+export {castArray, identity, isArray, isPrintable, isString};

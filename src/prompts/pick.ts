@@ -40,8 +40,8 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
 
   /* STATE */
 
-  let {message, min = 0, max = Infinity, multiple = true, searchable = true, options, focused: _focused, format = identity, transform = identity, validate} = _options;
-  let limit = Math.min ( process.stdout.getWindowSize ()[1] - 2, _options.limit || 7 ); // Ensuring the prompt won't overflow the terminal
+  let {message, min = 0, max = Infinity, multiple = true, searchable = true, options, format = identity, transform = identity, validate} = _options;
+  let limit = Math.max ( 1, Math.min ( process.stdout.getWindowSize ()[1] - 2, _options.limit || 7 ) ); // Ensuring the prompt won't overflow the terminal
   let status: -1 | 0 | 1 = 0;
   let query = '';
   let cursor = 0;
@@ -49,7 +49,7 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
   let filtered: Option<T>[] = options;
   let selected: Set<Option<T>> = new Set ();
   let visible = filtered.slice ( 0, limit );
-  let focused = Math.max ( 0, Math.min ( visible.length - 1, _focused || 0 ) ); //TODO: Calculate the initial visible range based on this value
+  let focused = Math.max ( 0, Math.min ( visible.length - 1, _options.focused || 0 ) ); //TODO: Calculate the initial visible range based on this value
 
   /* COMPONENTS */
 
@@ -76,8 +76,8 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
 
   const validation = (): string | undefined => {
     if ( !validating ) return;
-    if ( selected.size < min ) return color.yellow ( `⚠ Select at least ${min} option${min !== 1 ? 's' : ''}` );
-    if ( selected.size > max ) return color.yellow ( `⚠ Select at most ${max} option${max !== 1 ? 's' : ''}` );
+    if ( selected.size < min ) return color.yellow ( `⚠ Please select at least ${min} option${min !== 1 ? 's' : ''}` );
+    if ( selected.size > max ) return color.yellow ( `⚠ Please select at most ${max} option${max !== 1 ? 's' : ''}` );
     if ( !validate ) return;
     const results = options.filter ( option => selected.has ( option ) ); // To preserve the original order
     const result = validate ( results.map ( option => option.value ) );
@@ -101,7 +101,7 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
         const titles = results.map ( choice => choice.title );
         const values = results.map ( choice => choice.value );
         status = 1;
-        query = titles.join ( ', ' );
+        query = titles.join ( color.dim ( ', ' ) );
         resolve ( transform ( values as any ) ); //TSC: Try to type this right
         return main;
       }
