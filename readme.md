@@ -26,6 +26,10 @@ The following input prompts are provided, they all require the user to write som
 
 #### `string`
 
+<p align="center">
+  <img src="./resources/demo_string.gif" alt="Demo" width="662">
+</p>
+
 This prompt can be used to ask the user for a string value.
 
 ```ts
@@ -50,6 +54,10 @@ Interactions:
 
 #### `invisible`
 
+<p align="center">
+  <img src="./resources/demo_invisible.gif" alt="Demo" width="662">
+</p>
+
 This prompt can be used to ask the user for a password, without visually leaking even the length of the password to the console.
 
 ```ts
@@ -68,6 +76,10 @@ It can be interacted with exactly like a `string` prompt, the only difference is
 
 #### `password`
 
+<p align="center">
+  <img src="./resources/demo_password.gif" alt="Demo" width="662">
+</p>
+
 This prompt can be used to ask the user for a password, without visually leaking the characters that make it up to the console.
 
 ```ts
@@ -85,6 +97,10 @@ const result = await password ({
 It can be interacted with exactly like a `string` prompt, the only difference is that every character in the value will be replaced with an asterisk.
 
 #### `number`
+
+<p align="center">
+  <img src="./resources/demo_number.gif" alt="Demo" width="662">
+</p>
 
 This prompt can be used to ask the user for a password, without visually leaking the characters that make it up to the console.
 
@@ -107,6 +123,10 @@ It can be interacted with exactly like a `string` prompt, the only difference is
 The following input prompts are provided, they all require the user to select something.
 
 #### `multiselect`
+
+<p align="center">
+  <img src="./resources/demo_multiselect.gif" alt="Demo" width="662">
+</p>
 
 This prompt can be used to ask the user to pick from zero to many options between the provided ones.
 
@@ -159,6 +179,10 @@ Interactions:
 
 #### `select`
 
+<p align="center">
+  <img src="./resources/demo_select.gif" alt="Demo" width="662">
+</p>
+
 This prompt can be used to ask the user to pick one option between the provided ones.
 
 ```ts
@@ -183,6 +207,10 @@ It can be interacted with exactly like a `multiselect` prompt.
 
 #### `boolean`
 
+<p align="center">
+  <img src="./resources/demo_boolean.gif" alt="Demo" width="662">
+</p>
+
 This prompt can be used to ask the user to pick between yes and no.
 
 ```ts
@@ -199,6 +227,10 @@ const result = await boolean ({
 It can be interacted with exactly like a `select` prompt, except that search is turned off for it.
 
 #### `toggle`
+
+<p align="center">
+  <img src="./resources/demo_toggle.gif" alt="Demo" width="662">
+</p>
 
 This prompt can be used to ask the user to pick between yes and no, using a single line of output, rather than the three that `boolean` needs.
 
@@ -222,6 +254,10 @@ Interactions:
 | `Left`/`Right`/`Tab` | Select the other option.                            |
 
 #### `rating`
+
+<p align="center">
+  <img src="./resources/demo_rating.gif" alt="Demo" width="662">
+</p>
 
 This prompt can be used to ask the user for a numeric rating between 1 and 5.
 
@@ -345,6 +381,10 @@ const rating = ( options: Options ): Promise<Rating | undefined> => {
 ```
 
 #### `spinner`
+
+<p align="center">
+  <img src="./resources/demo_spinner.gif" alt="Demo" width="662">
+</p>
 
 The spinner prompt is a convenience wrapper around [`tiny-spinner`](https://github.com/fabiospampinato/tiny-spinner), which you could also use directly if you prefer.
 
