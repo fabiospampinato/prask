@@ -55,7 +55,8 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
   const main = (): string => {
     const _status = statusSymbol ( status );
     const _message = color.bold ( message );
-    const _query = status >= 0 ? withCursor ( format ( query, status ), cursor ) : '';
+    const _cursor = status === 0 ? cursor : -1;
+    const _query = status >= 0 && searchable ? withCursor ( format ( query, status ), _cursor ) : '';
     return [_status, _message, _query].join ( ' ' );
   };
 

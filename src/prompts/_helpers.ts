@@ -12,9 +12,9 @@ const statusSymbol = ( status: number ): string => {
 };
 
 const withCursor = ( value: string, position: number ): string => {
+  if ( position < 0 ) return value;
   if ( position >= value.length ) return `${value}${color.inverse ( ' ' )}`;
-  if ( position >= 0 ) return `${value.slice ( 0, position )}${color.inverse ( value.slice ( position, position + 1 ) )}${value.slice ( position + 1 )}`;
-  return value;
+  return `${value.slice ( 0, position )}${color.inverse ( value.slice ( position, position + 1 ) )}${value.slice ( position + 1 )}`;
 };
 
 /* EXPORT */

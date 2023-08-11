@@ -38,7 +38,8 @@ const input = <T> ( options: Options<T> ): Promise<T | undefined> => {
     const _status = statusSymbol ( status );
     const _message = color.bold ( message );
     const _initial = status === 0 && pristine && initial ? color.dim ( `(${initial})` ) : false;
-    const _value = status >= 0 ? withCursor ( format ( value, status ), cursor ) : '';
+    const _cursor = status === 0 ? cursor : -1;
+    const _value = status >= 0 ? withCursor ( format ( value, status ), _cursor ) : '';
     return [_status, _message, _initial, _value].filter ( isString ).join ( ' ' );
   };
 
