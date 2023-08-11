@@ -296,7 +296,7 @@ const rating = ( options: Options ): Promise<Rating | undefined> => {
 
   const STAR_ACTIVE = color.green ( '●' );
   const STAR_INACTIVE = '○';
-  const STARS_DIVIDER = '-----';
+  const STARS_DIVIDER = '─────';
   const LABELS_DIVIDER = '     ';
 
   // Let's define some internal state variables
