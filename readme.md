@@ -281,27 +281,25 @@ const rating = ( options: Options ): Promise<Rating | undefined> => {
 
   // Now let's handle keypresses
 
-  return prompt ({
-    render ( resolve, key ) {
-      if ( key === '' ) { // Initial render, no key has been pressed yet
-        return [question, stars, labels];
-      } else if ( key === '\x1B' ) { // Escape, let's bail out
-        status = -1;
-        resolve ( undefined );
-        return [question];
-      } else if ( key === '\r' ) { // Enter, let's return the current rating
-        status = 1;
-        resolve ( current );
-        return [question];
-      } else if ( key === '\x1B[D' || key === '\x1B[B' ) { // Left or Down, let's decrement the rating, if possible
-        current = Math.max ( 1, current - 1 );
-        return [question, stars, labels];
-      } else if ( key === '\x1B[C' || key === '\x1B[A' ) { // Right or Up, let's increment the rating, if possible
-        current = Math.min ( 5, current + 1 );
-        return [question, stars, labels];
-      } else { // Something else was pressed, let's just ignore it
-        return [question, stars, labels];
-      }
+  return prompt ( ( resolve, key ) => {
+    if ( key === '' ) { // Initial render, no key has been pressed yet
+      return [question, stars, labels];
+    } else if ( key === '\x1B' ) { // Escape, let's bail out
+      status = -1;
+      resolve ( undefined );
+      return [question];
+    } else if ( key === '\r' ) { // Enter, let's return the current rating
+      status = 1;
+      resolve ( current );
+      return [question];
+    } else if ( key === '\x1B[D' || key === '\x1B[B' ) { // Left or Down, let's decrement the rating, if possible
+      current = Math.max ( 1, current - 1 );
+      return [question, stars, labels];
+    } else if ( key === '\x1B[C' || key === '\x1B[A' ) { // Right or Up, let's increment the rating, if possible
+      current = Math.min ( 5, current + 1 );
+      return [question, stars, labels];
+    } else { // Something else was pressed, let's just ignore it
+      return [question, stars, labels];
     }
   });
 

@@ -1,12 +1,12 @@
 
 /* IMPORT */
 
-import purge from 'ansi-purge';
+import NakedPromise from 'promise-make-naked';
 import Cursor from 'tiny-cursor';
 import process from 'node:process';
 import readline from 'node:readline';
 import Stdin from '../stdin';
-import {castArray, isFunction, isNumber, isString} from '../utils';
+import {castArray, isString} from '../utils';
 
 /* TYPES */
 
@@ -14,79 +14,62 @@ type Line = {
   (): string | undefined
 };
 
-type Prompt<T> = {
-  cursor?: (() => void) | number | false,
-  render: ( resolve: ( value?: T ) => void, key: string ) => Line[] | Line
-};
-
-/* MAIN */
-
-//FIXME: flickering
-//TODO: Rewrite this whole module, it's pretty ugly
+type Prompt<T> = (
+  ( resolve: ( value?: T ) => void, key: string ) => Line[] | Line
+);
 
 /* MAIN */
 
 const prompt = <T> ( prompt: Prompt<T> ): Promise<T | undefined> => {
 
-  return new Promise<T> ( async res => {
+  return NakedPromise.wrap <T | undefined> ( async ({ resolve, isPending }) => {
 
-    /* HELPERS */
+    /* INIT */
 
-    let settled = false;
-
-    const resolve = ( value?: T ) => {
-      settled = true;
-      res ( value );
-    };
+    Cursor.hide ();
+    Stdin.start ();
 
     /* STATE */
 
     let lineCursor = 0;
-    let linesPrev = 0;
     let key = '';
 
     while ( true ) {
-
-      /* HIDING CURSOR */
-
-      Cursor.hide ();
 
       /* RESET CURSOR */
 
       readline.moveCursor ( process.stdout, 0, -lineCursor );
       readline.cursorTo ( process.stdout, 0 );
 
-      /* RESET SCREEN */
+      /* RE-RENDER */
 
-      readline.clearScreenDown ( process.stdout );
+      const linesNext = castArray ( prompt ( resolve, key ) ).map ( line => line () ).filter ( isString );
 
-      /* PRINT */
+      for ( let i = 0, l = linesNext.length; i < l; i++ ) {
 
-      const linesNext = castArray ( prompt.render ( resolve, key ) ).map ( line => line () ).filter ( isString ) // .map ( ( line, i ) => line.padEnd ( 20, ' ' ) );
-      const output = linesNext.join ( '\r\n' );
+        const lineNext = linesNext[i];
 
-      process.stdout.write ( output );
+        process.stdout.write ( lineNext );
 
-      linesPrev = linesNext.length;
+        readline.clearLine ( process.stdout, 1 );
+
+        if ( i < l - 1 ) {
+
+          process.stdout.write ( '\r\n' );
+
+        } else {
+
+          readline.clearScreenDown ( process.stdout );
+
+        }
+
+      }
+
       lineCursor = linesNext.length - 1;
 
       /* EXIT */
 
-      if ( settled ) break;
-
-      /* CURSOR */
-
-      if ( isNumber ( prompt.cursor ) ) {
-        readline.moveCursor ( process.stdout, 0, -lineCursor );
-        readline.cursorTo ( process.stdout, purge ( linesNext[prompt.cursor] ).length );
-        lineCursor = prompt.cursor;
-        Cursor.show ();
-      } else if ( isFunction ( prompt.cursor ) ) {
-        prompt.cursor ();
-        Cursor.show ();
-      } else {
-        Cursor.hide ();
-      }
+      if ( !isPending () ) break;
 
       /* NEXT */
 
@@ -94,7 +77,11 @@ const prompt = <T> ( prompt: Prompt<T> ): Promise<T | undefined> => {
 
     }
 
-    Stdin.newline ();
+    /* RESET */
+
+    process.stdout.write ( '\r\n' );
+
+    Stdin.stop ();
     Cursor.show ();
 
   });

@@ -51,48 +51,46 @@ const input = <T> ( options: Options<T> ): Promise<T | undefined> => {
 
   /* PROMPT */
 
-  return prompt ({
-    render: ( resolve, key ) => {
-      if ( key === KEY.ESCAPE ) {
-        pristine = false;
-        status = -1;
-        resolve ();
+  return prompt ( ( resolve, key ) => {
+    if ( key === KEY.ESCAPE ) {
+      pristine = false;
+      status = -1;
+      resolve ();
+      return main;
+    } else if ( key === KEY.ENTER ) {
+      value = pristine ? options.initial || value : value;
+      pristine = false;
+      validating = true;
+      if ( !validation () ) {
+        status = 1;
+        resolve ( transform ( value as any ) ); //TSC: Try to type this right
         return main;
-      } else if ( key === KEY.ENTER ) {
-        value = pristine ? options.initial || value : value;
-        pristine = false;
-        validating = true;
-        if ( !validation () ) {
-          status = 1;
-          resolve ( transform ( value as any ) ); //TSC: Try to type this right
-          return main;
-        }
-      } else if ( key === KEY.TAB && pristine ) {
-        pristine = false;
-        value = options.initial || value;
-      } else if ( key === KEY.LEFT ) {
-        cursor = Math.max ( 0, cursor - 1 );
-      } else if ( key === KEY.RIGHT ) {
-        cursor = Math.min ( value.length, cursor + 1 );
-      } else if ( key === KEY.CTRL_A ) {
-        cursor = 0;
-      } else if ( key === KEY.CTRL_E ) {
-        cursor = value.length;
-      } else if ( key === KEY.BACKSPACE ) {
-        pristine = false;
-        value = `${value.slice ( 0, Math.max ( 0, cursor - 1 ) )}${value.slice ( cursor )}`;
-        cursor = Math.max ( 0, cursor - 1 );
-      } else if ( key === KEY.DELETE ) {
-        pristine = false;
-        value = `${value.slice ( 0, cursor )}${value.slice ( cursor + 1 )}`;
-        cursor = Math.min ( value.length, cursor );
-      } else if ( isPrintable ( key ) ) {
-        pristine = false;
-        value = `${value.slice ( 0, cursor )}${key}${value.slice ( cursor )}`;
-        cursor = Math.min ( value.length, cursor + 1 );
       }
-      return [main, validation];
+    } else if ( key === KEY.TAB && pristine ) {
+      pristine = false;
+      value = options.initial || value;
+    } else if ( key === KEY.LEFT ) {
+      cursor = Math.max ( 0, cursor - 1 );
+    } else if ( key === KEY.RIGHT ) {
+      cursor = Math.min ( value.length, cursor + 1 );
+    } else if ( key === KEY.CTRL_A ) {
+      cursor = 0;
+    } else if ( key === KEY.CTRL_E ) {
+      cursor = value.length;
+    } else if ( key === KEY.BACKSPACE ) {
+      pristine = false;
+      value = `${value.slice ( 0, Math.max ( 0, cursor - 1 ) )}${value.slice ( cursor )}`;
+      cursor = Math.max ( 0, cursor - 1 );
+    } else if ( key === KEY.DELETE ) {
+      pristine = false;
+      value = `${value.slice ( 0, cursor )}${value.slice ( cursor + 1 )}`;
+      cursor = Math.min ( value.length, cursor );
+    } else if ( isPrintable ( key ) ) {
+      pristine = false;
+      value = `${value.slice ( 0, cursor )}${key}${value.slice ( cursor )}`;
+      cursor = Math.min ( value.length, cursor + 1 );
     }
+    return [main, validation];
   });
 
 };
