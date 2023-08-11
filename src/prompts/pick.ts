@@ -26,12 +26,12 @@ type Options<T, U> = {
 
 type Option<T> = {
   title: string,
-  value: T
+  value: T,
+  disabled?: boolean
 };
 
 /* MAIN */
 
-//TODO: Support values that are disabled
 //TODO: Support values with a description
 //TODO: Support values that are headings
 //TODO: Account for pre-colored searchable values
@@ -69,7 +69,7 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
       const _matchStart = option.title.toLowerCase ().indexOf ( query.toLowerCase () );
       const _matchEnd = _matchStart + query.length;
       const _match = query && _matchStart >= 0 ? `${option.title.slice ( 0, _matchStart )}${color.inverse ( option.title.slice ( _matchStart, _matchEnd ) )}${option.title.slice ( _matchEnd )}` : option.title;
-      const _title = isFocused ? color.underline ( color.cyan ( _match ) ) : _match;
+      const _title = isFocused ? color.underline ( option.disabled ? color.dim ( color.strikethrough ( _match ) ) : color.cyan ( _match ) ) : ( option.disabled ? color.dim ( color.strikethrough ( _match ) ) : _match );
       return [_status, _title].join ( ' ' );
     };
   };
@@ -107,10 +107,12 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
       }
     } else if ( key === KEY.SPACE && multiple ) {
       const choice = filtered[focused];
-      if ( selected.has ( choice ) ) {
-        selected.delete ( choice );
-      } else {
-        selected.add ( choice );
+      if ( !choice.disabled ) {
+        if ( selected.has ( choice ) ) {
+          selected.delete ( choice );
+        } else {
+          selected.add ( choice );
+        }
       }
     } else if ( key === KEY.UP ) {
       focused = ( focused - 1 + filtered.length ) % filtered.length;
