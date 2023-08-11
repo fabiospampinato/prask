@@ -80,7 +80,7 @@ const input = <T> ( options: Options<T> ): Promise<T | undefined> => {
         cursor = value.length;
       } else if ( key === KEY.BACKSPACE ) {
         pristine = false;
-        value = `${value.slice ( 0, cursor - 1 )}${value.slice ( cursor )}`;
+        value = `${value.slice ( 0, Math.max ( 0, cursor - 1 ) )}${value.slice ( cursor )}`;
         cursor = Math.max ( 0, cursor - 1 );
       } else if ( key === KEY.DELETE ) {
         pristine = false;

@@ -147,7 +147,7 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
       } else if ( key === KEY.CTRL_E && searchable ) {
         cursor = query.length;
       } else if ( key === KEY.BACKSPACE && searchable ) {
-        query = `${query.slice ( 0, cursor - 1 )}${query.slice ( cursor )}`;
+        query = `${query.slice ( 0, Math.max ( 0, cursor - 1 ) )}${query.slice ( cursor )}`;
         cursor = Math.max ( 0, cursor - 1 );
         filtered = options.filter ( option => option.title.toLowerCase ().includes ( query.toLowerCase () ) );
         visible = filtered.slice ( 0, limit );
