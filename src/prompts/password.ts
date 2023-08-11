@@ -1,6 +1,7 @@
 
 /* IMPORT */
 
+import color from 'tiny-colors';
 import input from './input';
 
 /* TYPES */
@@ -17,7 +18,11 @@ const password = ( options: Options ): Promise<string | undefined> => {
 
   return input ({
     ...options,
-    format: value => '*'.repeat ( value.length )
+    format: ( value, settled ) => {
+      const asterisks = '*'.repeat ( value.length );
+      const password = settled ? color.cyan ( asterisks ): asterisks;
+      return password;
+    }
   });
 
 };
