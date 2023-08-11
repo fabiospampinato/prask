@@ -11,6 +11,12 @@ const statusSymbol = ( status: number ): string => {
   return color.cyan ( color.bold ( '?' ) );
 };
 
+const withCursor = ( value: string, position: number ): string => {
+  if ( position >= value.length ) return `${value}${color.inverse ( ' ' )}`;
+  if ( position >= 0 ) return `${value.slice ( 0, position )}${color.inverse ( value.slice ( position, position + 1 ) )}${value.slice ( position + 1 )}`;
+  return value;
+};
+
 /* EXPORT */
 
-export {statusSymbol};
+export {statusSymbol, withCursor};

@@ -4,7 +4,7 @@
 import color from 'tiny-colors';
 import {KEY} from '../constants';
 import {identity, isPrintable} from '../utils';
-import {statusSymbol} from './_helpers';
+import {statusSymbol, withCursor} from './_helpers';
 import prompt from './prompt';
 
 /* HELPERS */
@@ -43,6 +43,7 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
   let {message, limit = 7, min = 0, max = Infinity, multiple = true, searchable = true, options, focused: _focused, format = identity, transform = identity, validate} = _options;
   let status: -1 | 0 | 1 = 0;
   let query = '';
+  let cursor = 0;
   let validating = false;
   let filtered: Option<T>[] = options;
   let selected: Set<Option<T>> = new Set ();
@@ -54,7 +55,7 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
   const main = (): string => {
     const _status = statusSymbol ( status );
     const _message = color.bold ( message );
-    const _query = status >= 0 ? format ( query, status ) : '';
+    const _query = status >= 0 ? withCursor ( format ( query, status ), cursor ) : '';
     return [_status, _message, _query].join ( ' ' );
   };
 
@@ -86,7 +87,6 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
   /* PROMPT */
 
   return prompt ({
-    cursor: searchable ? 0 : false,
     render: ( resolve, key ) => {
       if ( key === KEY.ESCAPE ) {
         status = -1;
@@ -139,11 +139,13 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
         }
       } else if ( key === KEY.BACKSPACE && searchable ) {
         query = query.slice ( 0, -1 );
+        cursor = query.length;
         filtered = options.filter ( option => option.title.toLowerCase ().includes ( query.toLowerCase () ) );
         visible = filtered.slice ( 0, limit );
         focused = 0;
       } else if ( isPrintable ( key ) && searchable ) {
         query += key;
+        cursor = query.length;
         filtered = filtered.filter ( option => option.title.toLowerCase ().includes ( query.toLowerCase () ) );
         visible = filtered.slice ( 0, limit );
         focused = 0;

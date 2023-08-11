@@ -4,7 +4,7 @@
 import color from 'tiny-colors';
 import {KEY} from '../constants';
 import {identity, isPrintable, isString} from '../utils';
-import {statusSymbol} from './_helpers';
+import {statusSymbol, withCursor} from './_helpers';
 import prompt from './prompt';
 
 /* TYPES */
@@ -30,6 +30,7 @@ const input = <T> ( options: Options<T> ): Promise<T | undefined> => {
   let status: -1 | 0 | 1 = 0;
   let validating = false;
   let value = '';
+  let cursor = 0;
 
   /* COMPONENTS */
 
@@ -37,7 +38,7 @@ const input = <T> ( options: Options<T> ): Promise<T | undefined> => {
     const _status = statusSymbol ( status );
     const _message = color.bold ( message );
     const _initial = status === 0 && pristine && initial ? color.dim ( `(${initial})` ) : false;
-    const _value = status >= 0 ? format ( value, status ) : '';
+    const _value = status >= 0 ? withCursor ( format ( value, status ), cursor ) : '';
     return [_status, _message, _initial, _value].filter ( isString ).join ( ' ' );
   };
 
@@ -52,7 +53,6 @@ const input = <T> ( options: Options<T> ): Promise<T | undefined> => {
   /* PROMPT */
 
   return prompt ({
-    cursor: 0,
     render: ( resolve, key ) => {
       if ( key === KEY.ESCAPE ) {
         pristine = false;
@@ -74,9 +74,11 @@ const input = <T> ( options: Options<T> ): Promise<T | undefined> => {
       } else if ( key === KEY.BACKSPACE ) {
         pristine = false;
         value = value.slice ( 0, -1 );
+        cursor = value.length;
       } else if ( isPrintable ( key ) ) {
         pristine = false;
         value += key;
+        cursor = value.length;
       }
       return [main, validation];
     }
