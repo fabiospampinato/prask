@@ -88,8 +88,8 @@ const input = <T> ( options: Options<T> ): Promise<T | undefined> => {
         cursor = Math.min ( value.length, cursor );
       } else if ( isPrintable ( key ) ) {
         pristine = false;
-        value += key;
-        cursor = value.length;
+        value = `${value.slice ( 0, cursor )}${key}${value.slice ( cursor )}`;
+        cursor = Math.min ( value.length, cursor + 1 );
       }
       return [main, validation];
     }
