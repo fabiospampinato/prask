@@ -69,6 +69,7 @@ const input = <T> ( options: Options<T> ): Promise<T | undefined> => {
     } else if ( key === KEY.TAB && pristine ) {
       pristine = false;
       value = options.initial || value;
+      cursor = value.length;
     } else if ( key === KEY.LEFT ) {
       cursor = Math.max ( 0, cursor - 1 );
     } else if ( key === KEY.RIGHT ) {
