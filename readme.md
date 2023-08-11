@@ -96,7 +96,7 @@ It can be interacted with exactly like a `string` prompt, the only difference is
   <img src="./resources/demo_number.gif" alt="Demo" width="662">
 </p>
 
-This prompt can be used to ask the user for a password, without visually leaking the characters that make it up to the console.
+This prompt can be used to ask the user for a numeric value.
 
 ```ts
 import {number} from 'prask';
