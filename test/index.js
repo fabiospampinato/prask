@@ -10,3 +10,4 @@ await import ( './rating.js' );
 await import ( './select.js' );
 await import ( './spinner.js' );
 await import ( './string.js' );
+await import ( './toggle.js' );
