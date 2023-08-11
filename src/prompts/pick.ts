@@ -111,12 +111,6 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
       } else {
         selected.add ( choice );
       }
-    } else if ( key === KEY.LEFT && multiple ) {
-      const choice = filtered[focused];
-      selected.delete ( choice );
-    } else if ( key === KEY.RIGHT && multiple ) {
-      const choice = filtered[focused];
-      selected.add ( choice );
     } else if ( key === KEY.UP ) {
       focused = ( focused - 1 + filtered.length ) % filtered.length;
       const visibleStart = filtered.indexOf ( visible[0] );
@@ -137,9 +131,9 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
         const visibleStartNext = Math.max ( 0, visibleEndNext - limit );
         visible = filtered.slice ( visibleStartNext, visibleEndNext );
       }
-    } else if ( key === KEY.LEFT && !multiple && searchable ) {
+    } else if ( key === KEY.LEFT && searchable ) {
       cursor = Math.max ( 0, cursor - 1 );
-    } else if ( key === KEY.RIGHT && !multiple && searchable ) {
+    } else if ( key === KEY.RIGHT && searchable ) {
       cursor = Math.min ( query.length, cursor + 1 );
     } else if ( key === KEY.CTRL_A && searchable ) {
       cursor = 0;

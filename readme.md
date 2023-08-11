@@ -136,10 +136,8 @@ Interactions:
 | `Esc`   | Quit the prompt, which will resolve to `undefined`.                                    |
 | `Enter` | Submit the selected values, checking if the selection is valid first.                  |
 | `Space` | Toggle the focused option.                                                             |
-| `Right` | Make the focused option selected.                                                      |
-| `Left`  | Make the focused option not selected.                                                  |
-| `Up`    | Move the focus to the previous item, and potentially scroll to the previous page.     |
-| `Down`  | Move the focus to the next item, and potentially scroll to the next page.             |
+| `Up`    | Move the focus to the previous item, and potentially scroll to the previous page.      |
+| `Down`  | Move the focus to the next item, and potentially scroll to the next page.              |
 | `*`     | All other keys will be used to edit the search query, which will filter down the list. |
 
 #### `select`
@@ -164,7 +162,7 @@ const result = await select ({
 });
 ```
 
-It can be interacted with exactly like a `multiselect` prompt, except that `Space`, `Left` and `Right` are handled literally.
+It can be interacted with exactly like a `multiselect` prompt, except that `Space` is handled literally.
 
 #### `boolean`
 
