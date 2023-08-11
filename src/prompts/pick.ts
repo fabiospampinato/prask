@@ -112,12 +112,12 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
         } else {
           selected.add ( choice );
         }
-      } else if ( key === KEY.RIGHT && multiple ) {
-        const choice = filtered[focused];
-        selected.add ( choice );
       } else if ( key === KEY.LEFT && multiple ) {
         const choice = filtered[focused];
         selected.delete ( choice );
+      } else if ( key === KEY.RIGHT && multiple ) {
+        const choice = filtered[focused];
+        selected.add ( choice );
       } else if ( key === KEY.UP ) {
         focused = ( focused - 1 + filtered.length ) % filtered.length;
         const visibleStart = filtered.indexOf ( visible[0] );
@@ -138,12 +138,23 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
           const visibleStartNext = Math.max ( 0, visibleEndNext - limit );
           visible = filtered.slice ( visibleStartNext, visibleEndNext );
         }
-      } else if ( key === KEY.BACKSPACE && searchable ) {
-        query = query.slice ( 0, -1 );
+      } else if ( key === KEY.LEFT && !multiple && searchable ) {
+        cursor = Math.max ( 0, cursor - 1 );
+      } else if ( key === KEY.RIGHT && !multiple && searchable ) {
+        cursor = Math.min ( query.length, cursor + 1 );
+      } else if ( key === KEY.CTRL_A && searchable ) {
+        cursor = 0;
+      } else if ( key === KEY.CTRL_E && searchable ) {
         cursor = query.length;
+      } else if ( key === KEY.BACKSPACE && searchable ) {
+        query = `${query.slice ( 0, cursor - 1 )}${query.slice ( cursor )}`;
+        cursor = Math.max ( 0, cursor - 1 );
         filtered = options.filter ( option => option.title.toLowerCase ().includes ( query.toLowerCase () ) );
         visible = filtered.slice ( 0, limit );
         focused = 0;
+      } else if ( key === KEY.DELETE && searchable ) {
+        query = `${query.slice ( 0, cursor )}${query.slice ( cursor + 1 )}`;
+        cursor = Math.min ( query.length, cursor );
       } else if ( isPrintable ( key ) && searchable ) {
         query += key;
         cursor = query.length;
