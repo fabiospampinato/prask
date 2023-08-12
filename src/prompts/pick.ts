@@ -93,12 +93,12 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
 
   /* PROMPT */
 
-  return prompt ( ( resolve, key ) => {
-    if ( key === KEY.ESCAPE ) {
+  return prompt ( ( resolve, input ) => {
+    if ( input === KEY.ESCAPE ) {
       status = -1;
       resolve ();
       return main;
-    } else if ( key === KEY.ENTER || ( key === KEY.SPACE && !multiple ) ) {
+    } else if ( input === KEY.ENTER || ( input === KEY.SPACE && !multiple ) ) {
       const option = filtered[focused];
       selected = multiple || !option || option.disabled || option.heading ? selected : new Set ([ option ]);
       validating = true;
@@ -111,7 +111,7 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
         resolve ( transform ( values as any ) ); //TSC: Try to type this right
         return main;
       }
-    } else if ( key === KEY.SPACE && multiple ) {
+    } else if ( input === KEY.SPACE && multiple ) {
       const option = filtered[focused];
       if ( !option.disabled && !option.heading ) {
         if ( selected.has ( option ) ) {
@@ -120,7 +120,7 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
           selected.add ( option );
         }
       }
-    } else if ( key === KEY.UP ) {
+    } else if ( input === KEY.UP ) {
       focused = ( focused - 1 + filtered.length ) % filtered.length;
       const visibleStart = filtered.indexOf ( visible[0] );
       if ( focused === filtered.length - 1 ) {
@@ -130,7 +130,7 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
         const visibleEndNext = Math.min ( filtered.length, visibleStartNext + limit );
         visible = filtered.slice ( visibleStartNext, visibleEndNext );
       }
-    } else if ( key === KEY.DOWN ) {
+    } else if ( input === KEY.DOWN ) {
       focused = ( focused + 1 ) % filtered.length;
       const visibleEnd = filtered.indexOf ( visible[visible.length - 1] );
       if ( focused === 0 ) {
@@ -140,29 +140,29 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
         const visibleStartNext = Math.max ( 0, visibleEndNext - limit );
         visible = filtered.slice ( visibleStartNext, visibleEndNext );
       }
-    } else if ( key === KEY.LEFT && searchable ) {
+    } else if ( input === KEY.LEFT && searchable ) {
       cursor = Math.max ( 0, cursor - 1 );
-    } else if ( key === KEY.RIGHT && searchable ) {
+    } else if ( input === KEY.RIGHT && searchable ) {
       cursor = Math.min ( query.length, cursor + 1 );
-    } else if ( key === KEY.CTRL_A && searchable ) {
+    } else if ( input === KEY.CTRL_A && searchable ) {
       cursor = 0;
-    } else if ( key === KEY.CTRL_E && searchable ) {
+    } else if ( input === KEY.CTRL_E && searchable ) {
       cursor = query.length;
-    } else if ( key === KEY.BACKSPACE && searchable ) {
+    } else if ( input === KEY.BACKSPACE && searchable ) {
       query = `${query.slice ( 0, Math.max ( 0, cursor - 1 ) )}${query.slice ( cursor )}`;
       cursor = Math.max ( 0, cursor - 1 );
       filtered = options.filter ( option => option.heading || option.title.toLowerCase ().includes ( query.toLowerCase () ) );
       visible = filtered.slice ( 0, limit );
       focused = 0;
-    } else if ( key === KEY.DELETE && searchable ) {
+    } else if ( input === KEY.DELETE && searchable ) {
       query = `${query.slice ( 0, cursor )}${query.slice ( cursor + 1 )}`;
       cursor = Math.min ( query.length, cursor );
       filtered = options.filter ( option => option.heading || option.title.toLowerCase ().includes ( query.toLowerCase () ) );
       visible = filtered.slice ( 0, limit );
       focused = 0;
-    } else if ( isPrintable ( key ) && searchable ) {
-      query = `${query.slice ( 0, cursor )}${key}${query.slice ( cursor )}`;
-      cursor = Math.min ( query.length, cursor + 1 );
+    } else if ( isPrintable ( input ) && searchable ) {
+      query = `${query.slice ( 0, cursor )}${input}${query.slice ( cursor )}`;
+      cursor = Math.min ( query.length, cursor + input.length );
       filtered = filtered.filter ( option => option.heading || option.title.toLowerCase ().includes ( query.toLowerCase () ) );
       visible = filtered.slice ( 0, limit );
       focused = 0;

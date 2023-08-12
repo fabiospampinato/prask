@@ -38,14 +38,14 @@ const toggle = ( options: Options ): Promise<boolean | undefined> => {
 
   /* PROMPT */
 
-  return prompt ( ( resolve, key ) => {
-    if ( key === KEY.ESCAPE ) {
+  return prompt ( ( resolve, input ) => {
+    if ( input === KEY.ESCAPE ) {
       status = -1;
       resolve ();
-    } else if ( key === KEY.ENTER ) {
+    } else if ( input === KEY.ENTER ) {
       status = 1;
       resolve ( value );
-    } else if ( key === KEY.TAB || key === KEY.LEFT || key === KEY.RIGHT ) {
+    } else if ( input === KEY.TAB || input === KEY.LEFT || input === KEY.RIGHT ) {
       value = !value;
     }
     return main;

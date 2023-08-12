@@ -58,18 +58,18 @@ const rating = ( options: Options ): Promise<Rating | undefined> => {
 
   /* PROMPT */
 
-  return prompt ( ( resolve, key ) => {
-    if ( key === KEY.ESCAPE ) {
+  return prompt ( ( resolve, input ) => {
+    if ( input === KEY.ESCAPE ) {
       status = -1;
       resolve ();
       return question;
-    } else if ( key === KEY.ENTER ) {
+    } else if ( input === KEY.ENTER ) {
       status = 1;
       resolve ( current );
       return question;
-    } else if ( key === KEY.LEFT || key === KEY.DOWN ) {
+    } else if ( input === KEY.LEFT || input === KEY.DOWN ) {
       current = Math.max ( 1, current - 1 ) as Rating; //TSC
-    } else if ( key === KEY.RIGHT || key === KEY.UP ) {
+    } else if ( input === KEY.RIGHT || input === KEY.UP ) {
       current = Math.min ( 5, current + 1 ) as Rating; //TSC
     }
     return [question, stars, labels];

@@ -31,7 +31,7 @@ const prompt = <T> ( prompt: Prompt<T> ): Promise<T | undefined> => {
 
     /* STATE */
 
-    let key = '';
+    let input = '';
     let linesNr = 1;
 
     /* RENDER LOOP */
@@ -45,7 +45,7 @@ const prompt = <T> ( prompt: Prompt<T> ): Promise<T | undefined> => {
 
       /* RE-RENDER */
 
-      const lines = castArray ( prompt ( resolve, key ) ).map ( line => line () ).filter ( isString );
+      const lines = castArray ( prompt ( resolve, input ) ).map ( line => line () ).filter ( isString );
 
       for ( let i = 0, l = lines.length; i < l; i++ ) {
 
@@ -75,7 +75,7 @@ const prompt = <T> ( prompt: Prompt<T> ): Promise<T | undefined> => {
 
       /* NEXT ITERATION */
 
-      key = await Stdin.next ();
+      input = await Stdin.next ();
 
     }
 
