@@ -3,6 +3,7 @@
 
 import boolean from './prompts/boolean';
 import invisible from './prompts/invisible';
+import log from './prompts/log';
 import multiselect from './prompts/multiselect';
 import number from './prompts/number';
 import password from './prompts/password';
@@ -15,4 +16,4 @@ import toggle from './prompts/toggle';
 
 /* EXPORT */
 
-export {boolean, invisible, multiselect, number, password, prompt, rating, select, spinner, string, toggle};
+export {boolean, invisible, log, multiselect, number, password, prompt, rating, select, spinner, string, toggle};

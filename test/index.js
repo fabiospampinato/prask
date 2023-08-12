@@ -3,6 +3,7 @@
 
 await import ( './boolean.js' );
 await import ( './invisible.js' );
+await import ( './log.js' );
 await import ( './multiselect.js' );
 await import ( './number.js' );
 await import ( './password.js' );

@@ -2,7 +2,7 @@
 /* IMPORT */
 
 import {setTimeout as delay} from 'node:timers/promises';
-import {boolean, invisible, multiselect, number, password, prompt, rating, select, spinner, string, toggle} from '../dist/index.js';
+import {boolean, invisible, log, multiselect, number, password, prompt, rating, select, spinner, string, toggle} from '../dist/index.js';
 import {COUNTRIES} from '../test/_fixtures.js';
 
 /* MAIN - INPUT */
@@ -50,6 +50,12 @@ await rating ({
 });
 
 /* MAIN - OTHER */
+
+log.success ( 'Success message' );
+log.error ( 'Error message' );
+log.warning ( 'Warning message' );
+log.question ( 'Question message' );
+log.info ( 'Info message' );
 
 await spinner ( async ({ update, resolve }) => {
   update ( 'Working' );

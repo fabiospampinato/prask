@@ -12,9 +12,9 @@ npm install --save prask
 
 | Input                   | Selection                   | Others              |
 | ----------------------- | --------------------------- | ------------------- |
-| [string](#string)       | [multiselect](#multiselect) | [prompt](#prompt)   |
-| [invisible](#invisible) | [select](#select)           | [spinner](#spinner) |
-| [password](#password)   | [boolean](#boolean)         |                     |
+| [string](#string)       | [multiselect](#multiselect) | [log](#log)         |
+| [invisible](#invisible) | [select](#select)           | [prompt](#prompt)   |
+| [password](#password)   | [boolean](#boolean)         | [spinner](#spinner) |
 | [number](#number)       | [toggle](#toggle)           |                     |
 |                         | [rating](#rating)           |                     |
 
@@ -270,6 +270,24 @@ Interactions:
 | `Enter`       | Submit the selected rating.                         |
 | `Right`/`Up`  | Increment the selected rating.                      |
 | `Left`/`Down` | Decrement the selected rating.                      |
+
+### `log`
+
+<p align="center">
+  <img src="./resources/demo_log.gif" alt="Demo" width="662">
+</p>
+
+This utility provides functions for logging a line of text to the console, with the same style that the built-in prompts use.
+
+```ts
+import {log} from 'prask';
+
+log.success ( 'Success message' );
+log.error ( 'Error message' );
+log.warning ( 'Warning message' );
+log.question ( 'Question message' );
+log.info ( 'Info message' );
+```
 
 ### `prompt`
 
