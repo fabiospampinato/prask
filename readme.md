@@ -34,6 +34,7 @@ const result = await string ({
   message: 'What is your name?', // The message that the user will read
   /* OPTIONAL OPTIONS */
   initial: 'John Doe', // Optional default value, to allow the user to quickly press Enter for it
+  required: true, // Whether a non-empty value for this prompt is required or not
   validate: value => value.length >= 2 // Optional validation function
 });
 ```
@@ -62,6 +63,7 @@ const result = await invisible ({
   message: 'What is your password?', // The message that the user will read
   /* OPTIONAL OPTIONS */
   initial: 'P@assword!', // Optional default value, to allow the user to quickly press Enter for it, better not to use it since it will be visible
+  required: true, // Whether a non-empty value for this prompt is required or not
   validate: value => value.length >= 8 // Optional validation function
 });
 ```
@@ -84,6 +86,7 @@ const result = await password ({
   message: 'What is your password?', // The message that the user will read
   /* OPTIONAL OPTIONS */
   initial: 'P@assword!', // Optional default value, to allow the user to quickly press Enter for it, better not to use it since it will be visible
+  required: true, // Whether a non-empty value for this prompt is required or not
   validate: value => value.length >= 8 // Optional validation function
 });
 ```

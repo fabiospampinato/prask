@@ -8,6 +8,7 @@ import input from './input';
 type Options = {
   message: string,
   initial?: string,
+  required?: boolean,
   validate?: ( value: string ) => string | boolean
 };
 

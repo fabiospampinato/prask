@@ -12,6 +12,7 @@ import prompt from './prompt';
 type Options<T> = {
   message: string,
   initial?: string,
+  required?: boolean,
   format?: ( value: string, status: -1 | 0 | 1 ) => string,
   transform?: ( value: string ) => T,
   validate?: ( value: string ) => string | boolean
@@ -23,7 +24,7 @@ const input = <T> ( options: Options<T> ): Promise<T | undefined> => {
 
   /* STATE */
 
-  let {message, initial, format = identity, transform = identity, validate} = options;
+  let {message, initial, required, format = identity, transform = identity, validate} = options;
   let pristine = true;
   let status: -1 | 0 | 1 = 0;
   let validating = false;
@@ -42,6 +43,8 @@ const input = <T> ( options: Options<T> ): Promise<T | undefined> => {
   };
 
   const validation = (): string | undefined => {
+    const missing = validating && required && !value;
+    if ( missing ) return color.yellow ( '⚠ Please provide a value' );
     if ( !validating || !validate ) return;
     const result = validate ( value );
     if ( result === true ) return;

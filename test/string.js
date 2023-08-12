@@ -11,6 +11,11 @@ await string ({
 
 await string ({
   message: 'What is your name?',
+  required: true
+});
+
+await string ({
+  message: 'What is your name?',
   initial: 'John Doe'
 });
 
