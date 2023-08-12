@@ -23,7 +23,7 @@
   ],
   "dependencies": {
     "promise-make-naked": "^2.1.1",
-    "tiny-colors": "^2.0.2",
+    "tiny-colors": "^2.1.0",
     "tiny-cursor": "^2.0.0",
     "tiny-spinner": "^2.0.2"
   },

@@ -29,8 +29,8 @@ const toggle = ( options: Options ): Promise<boolean | undefined> => {
     const _status = statusSymbol ( status );
     const _message = color.bold ( message );
     const _slash = color.dim ( '/' );
-    const _no = ( value === false ) ? color.underline ( color.cyan ( 'No' ) ) : 'No';
-    const _yes = ( value === true ) ? color.underline ( color.cyan ( 'Yes' ) ) : 'Yes';
+    const _no = ( value === false ) ? color.cyan.underline ( 'No' ) : 'No';
+    const _yes = ( value === true ) ? color.cyan.underline ( 'Yes' ) : 'Yes';
     const _selected = color.cyan ( value ? 'Yes' : 'No' );
     const _parts = ( status === -1 ) ? [_status, _message] : ( status === 1 ) ? [_status, _message, _selected] : [_status, _message, _no, _slash, _yes];
     return _parts.join ( ' ' );

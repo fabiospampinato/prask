@@ -8,7 +8,7 @@ import color from 'tiny-colors';
 const statusSymbol = ( status: number ): string => {
   if ( status < 0 ) return color.red ( '✖' );
   if ( status > 0 ) return color.green ( '✔' );
-  return color.cyan ( color.bold ( '?' ) );
+  return color.cyan.bold ( '?' );
 };
 
 const withCursor = ( value: string, position: number ): string => {

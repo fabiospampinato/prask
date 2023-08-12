@@ -334,7 +334,7 @@ const rating = ( options: Options ): Promise<Rating | undefined> => {
   const statusSymbol = ( status ): string => {
     if ( status < 0 ) return color.red ( '✖' );
     if ( status > 0 ) return color.green ( '✔' );
-    return color.cyan ( color.bold ( '?' ) );
+    return color.cyan.bold ( '?' );
   };
 
   const question = (): string => {

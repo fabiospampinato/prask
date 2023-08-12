@@ -72,7 +72,7 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
       const _matchStart = option.title.toLowerCase ().indexOf ( query.toLowerCase () );
       const _matchEnd = _matchStart + query.length;
       const _match = query && _matchStart >= 0 && !option.heading ? `${option.title.slice ( 0, _matchStart )}${color.inverse ( option.title.slice ( _matchStart, _matchEnd ) )}${option.title.slice ( _matchEnd )}` : option.title;
-      const _title = isFocused ? color.underline ( option.disabled ? color.dim ( color.strikethrough ( _match ) ) : color.cyan ( _match ) ) : ( option.disabled ? color.dim ( color.strikethrough ( _match ) ) : _match );
+      const _title = isFocused ? ( option.disabled ? color.dim.strikethrough.underline ( _match ) : color.cyan.underline ( _match ) ) : ( option.disabled ? color.dim.strikethrough ( _match ) : _match );
       const _description = option.description ? color.dim ( option.description ) : false;
       const _hint = option.hint && isFocused ? color.dim ( option.hint ) : false;
       return [_status, _title, _description, _hint].filter ( isString ).join ( ' ' );
