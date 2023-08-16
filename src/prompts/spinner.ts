@@ -25,10 +25,12 @@ const spinner = ( fn: ( actions: Actions ) => void ): Promise<boolean> => {
         spinner.start ( message );
       },
       resolve: message => {
+        spinner.start ( message );
         spinner.success ( message );
         resolve ( true );
       },
       reject: message => {
+        spinner.start ( message );
         spinner.error ( message );
         resolve ( false );
       }
