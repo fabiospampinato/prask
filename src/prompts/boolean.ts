@@ -21,7 +21,8 @@ const boolean = ( options: Options ): Promise<boolean | undefined> => {
     searchable: false,
     focused: ( options.initial ?? true ) ? 1 : 0,
     options: [{ title: 'No', value: false }, { title: 'Yes', value: true }],
-    format: value => color.cyan ( value )
+    format: value => color.cyan ( value ),
+    transform: value => !!value[0]
   });
 
 };
