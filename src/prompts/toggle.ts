@@ -45,7 +45,7 @@ const toggle = ( options: Options ): Promise<boolean | undefined> => {
     } else if ( input === KEY.ENTER ) {
       status = 1;
       resolve ( value );
-    } else if ( input === KEY.TAB || input === KEY.LEFT || input === KEY.RIGHT ) {
+    } else if ( input === KEY.TAB || input === KEY.LEFT || input === KEY.RIGHT || input === KEY.UP || input === KEY.DOWN ) {
       value = !value;
     }
     return main;

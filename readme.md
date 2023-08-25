@@ -240,11 +240,11 @@ const result = await toggle ({
 
 Interactions:
 
-| Trigger              | Description                                         |
-| -------------------- | --------------------------------------------------- |
-| `Esc`                | Quit the prompt, which will resolve to `undefined`. |
-| `Enter`              | Submit the selected option.                         |
-| `Left`/`Right`/`Tab` | Select the other option.                            |
+| Trigger                          | Description                                         |
+| -------------------------------- | --------------------------------------------------- |
+| `Esc`                            | Quit the prompt, which will resolve to `undefined`. |
+| `Enter`                          | Submit the selected option.                         |
+| `Left`/`Right`/`Up`/`Down`/`Tab` | Select the other option.                            |
 
 ### `rating`
 
