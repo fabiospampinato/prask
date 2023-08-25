@@ -323,7 +323,7 @@ const rating = ( options: Options ): Promise<Rating | undefined> => {
   // Let's define some internal state variables
   // The status variable let's us keep track of whether this prompt was escaped (-1), submitted (1), or it's still pending (0)
 
-  let {message, initial = 2} = options;
+  let {message, initial = 3} = options;
   let status: -1 | 0 | 1 = 0;
   let current = initial;
 

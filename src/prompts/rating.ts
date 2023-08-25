@@ -30,7 +30,7 @@ const rating = ( options: Options ): Promise<Rating | undefined> => {
 
   /* STATE */
 
-  let {message, initial = 2} = options;
+  let {message, initial = 3} = options;
   let status: -1 | 0 | 1 = 0;
   let current = initial;
 
