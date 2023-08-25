@@ -7,6 +7,7 @@ import process from 'node:process';
 import readline from 'node:readline';
 import Stdin from '../stdin';
 import {castArray, isString} from '../utils';
+import type {Key} from '../types';
 
 /* TYPES */
 
@@ -15,7 +16,7 @@ type Component = {
 };
 
 type Prompt<T> = (
-  ( resolve: ( value?: T ) => void, key: string ) => Component[] | Component
+  ( resolve: ( value?: T ) => void, key: Key ) => Component[] | Component
 );
 
 /* MAIN */
@@ -27,16 +28,26 @@ const prompt = <T> ( prompt: Prompt<T> ): Promise<T | undefined> => {
     /* INIT */
 
     Cursor.hide ();
+    Stdin.init ();
     Stdin.start ();
 
     /* STATE */
 
-    let input = '';
+    let keyInit: Key = { key: '', sequence: '', ctrl: false, meta: false, shift: false };
+    let keys: Key[]= [keyInit];
     let linesNr = 1;
+
+    /* LISTEN */
+
+    const unlisten = Stdin.listen ( key => keys.push ( key ) );
 
     /* RENDER LOOP */
 
     while ( true ) {
+
+      const key = keys.shift ();
+
+      if ( !key ) break;
 
       /* RESET CURSOR */
 
@@ -45,7 +56,7 @@ const prompt = <T> ( prompt: Prompt<T> ): Promise<T | undefined> => {
 
       /* RE-RENDER */
 
-      const lines = castArray ( prompt ( resolve, input ) ).map ( line => line () ).filter ( isString );
+      const lines = castArray ( prompt ( resolve, key ) ).map ( line => line () ).filter ( isString );
 
       for ( let i = 0, l = lines.length; i < l; i++ ) {
 
@@ -75,9 +86,15 @@ const prompt = <T> ( prompt: Prompt<T> ): Promise<T | undefined> => {
 
       /* NEXT ITERATION */
 
-      input = await Stdin.next ();
+      if ( keys.length ) continue;
+
+      await Stdin.wait ();
 
     }
+
+    /* UNLISTEN */
+
+    unlisten ();
 
     /* RESET */
 

@@ -21,8 +21,8 @@ const spinner = ( fn: ( actions: Actions ) => void ): Promise<boolean> => {
 
     await fn ({
       update: message => {
-        spinner.update ( message );
         spinner.start ( message );
+        spinner.update ( message );
       },
       resolve: message => {
         spinner.start ( message );

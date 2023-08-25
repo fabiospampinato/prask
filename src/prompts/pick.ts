@@ -3,7 +3,7 @@
 
 import process from 'node:process';
 import color from 'tiny-colors';
-import {KEY} from '../constants';
+import {KEY, SHORTCUT} from '../constants';
 import {identity, isPrintable, isString} from '../utils';
 import {statusSymbol, warning, withCursor} from './_helpers';
 import {SYMBOL_FOCUSED, SYMBOL_SELECTED, SYMBOL_UNSELECTED} from './_symbols';
@@ -94,12 +94,12 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
 
   /* PROMPT */
 
-  return prompt ( ( resolve, input ) => {
-    if ( input === KEY.ESCAPE ) {
+  return prompt ( ( resolve, {key, sequence} ) => {
+    if ( key === KEY.ESCAPE ) {
       status = -1;
       resolve ();
       return main;
-    } else if ( input === KEY.ENTER || ( input === KEY.SPACE && !multiple ) ) {
+    } else if ( key === KEY.ENTER || ( key === KEY.SPACE && !multiple ) ) {
       const option = filtered[focused];
       selected = multiple || !option || option.disabled || option.heading ? selected : new Set ([ option ]);
       validating = true;
@@ -112,7 +112,7 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
         resolve ( transform ( values as any ) ); //TSC: Try to type this right
         return main;
       }
-    } else if ( input === KEY.SPACE && multiple ) {
+    } else if ( key === KEY.SPACE && multiple ) {
       const option = filtered[focused];
       if ( !option.disabled && !option.heading ) {
         if ( selected.has ( option ) ) {
@@ -121,7 +121,7 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
           selected.add ( option );
         }
       }
-    } else if ( input === KEY.UP ) {
+    } else if ( key === KEY.UP ) {
       focused = ( focused - 1 + filtered.length ) % filtered.length;
       const visibleStart = filtered.indexOf ( visible[0] );
       if ( focused === filtered.length - 1 ) {
@@ -131,7 +131,7 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
         const visibleEndNext = Math.min ( filtered.length, visibleStartNext + limit );
         visible = filtered.slice ( visibleStartNext, visibleEndNext );
       }
-    } else if ( input === KEY.DOWN ) {
+    } else if ( key === KEY.DOWN ) {
       focused = ( focused + 1 ) % filtered.length;
       const visibleEnd = filtered.indexOf ( visible[visible.length - 1] );
       if ( focused === 0 ) {
@@ -141,29 +141,29 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
         const visibleStartNext = Math.max ( 0, visibleEndNext - limit );
         visible = filtered.slice ( visibleStartNext, visibleEndNext );
       }
-    } else if ( input === KEY.LEFT && searchable ) {
+    } else if ( key === KEY.LEFT && searchable ) {
       cursor = Math.max ( 0, cursor - 1 );
-    } else if ( input === KEY.RIGHT && searchable ) {
+    } else if ( key === KEY.RIGHT && searchable ) {
       cursor = Math.min ( query.length, cursor + 1 );
-    } else if ( input === KEY.CTRL_A && searchable ) {
+    } else if ( sequence === SHORTCUT.CTRL_A && searchable ) {
       cursor = 0;
-    } else if ( input === KEY.CTRL_E && searchable ) {
+    } else if ( sequence === SHORTCUT.CTRL_E && searchable ) {
       cursor = query.length;
-    } else if ( input === KEY.BACKSPACE && searchable ) {
+    } else if ( key === KEY.BACKSPACE && searchable ) {
       query = `${query.slice ( 0, Math.max ( 0, cursor - 1 ) )}${query.slice ( cursor )}`;
       cursor = Math.max ( 0, cursor - 1 );
       filtered = options.filter ( option => option.heading || option.title.toLowerCase ().includes ( query.toLowerCase () ) );
       visible = filtered.slice ( 0, limit );
       focused = 0;
-    } else if ( input === KEY.DELETE && searchable ) {
+    } else if ( key === KEY.DELETE && searchable ) {
       query = `${query.slice ( 0, cursor )}${query.slice ( cursor + 1 )}`;
       cursor = Math.min ( query.length, cursor );
       filtered = options.filter ( option => option.heading || option.title.toLowerCase ().includes ( query.toLowerCase () ) );
       visible = filtered.slice ( 0, limit );
       focused = 0;
-    } else if ( isPrintable ( input ) && searchable ) {
-      query = `${query.slice ( 0, cursor )}${input}${query.slice ( cursor )}`;
-      cursor = Math.min ( query.length, cursor + input.length );
+    } else if ( isPrintable ( sequence ) && searchable ) {
+      query = `${query.slice ( 0, cursor )}${sequence}${query.slice ( cursor )}`;
+      cursor = Math.min ( query.length, cursor + sequence.length );
       filtered = filtered.filter ( option => option.heading || option.title.toLowerCase ().includes ( query.toLowerCase () ) );
       visible = filtered.slice ( 0, limit );
       focused = 0;

@@ -1,8 +1,4 @@
 
-/* IMPORT */
-
-import {KEY} from './constants';
-
 /* MAIN */
 
 const castArray = <T> ( value: T | T[] ): T[] => {
@@ -17,15 +13,9 @@ const identity = <T> ( value: T ): T => {
 
 };
 
-const isArray = ( value: unknown ): value is unknown[] => {
+const isPrintable = ( value: string ): boolean => {
 
-  return Array.isArray ( value );
-
-};
-
-const isPrintable = ( key: string ): boolean => {
-
-  return !!key && !key.startsWith ( KEY.ESCAPE );
+  return !!value && !value.startsWith ( '\x1B' );
 
 };
 
@@ -37,4 +27,4 @@ const isString = ( value: unknown ): value is string => {
 
 /* EXPORT */
 
-export {castArray, identity, isArray, isPrintable, isString};
+export {castArray, identity, isPrintable, isString};

@@ -2,7 +2,7 @@
 /* IMPORT */
 
 import color from 'tiny-colors';
-import {KEY} from '../constants';
+import {KEY, SHORTCUT} from '../constants';
 import {identity, isPrintable, isString} from '../utils';
 import {statusSymbol, warning, withCursor} from './_helpers';
 import prompt from './prompt';
@@ -54,13 +54,13 @@ const input = <T> ( options: Options<T> ): Promise<T | undefined> => {
 
   /* PROMPT */
 
-  return prompt ( ( resolve, input ) => {
-    if ( input === KEY.ESCAPE ) {
+  return prompt ( ( resolve, {key, sequence} ) => {
+    if ( key === KEY.ESCAPE ) {
       pristine = false;
       status = -1;
       resolve ();
       return main;
-    } else if ( input === KEY.ENTER ) {
+    } else if ( key === KEY.ENTER ) {
       value = pristine ? options.initial || value : value;
       pristine = false;
       validating = true;
@@ -69,30 +69,30 @@ const input = <T> ( options: Options<T> ): Promise<T | undefined> => {
         resolve ( transform ( value as any ) ); //TSC: Try to type this right
         return main;
       }
-    } else if ( input === KEY.TAB && pristine ) {
+    } else if ( key === KEY.TAB && pristine ) {
       pristine = false;
       value = options.initial || value;
       cursor = value.length;
-    } else if ( input === KEY.LEFT ) {
+    } else if ( key === KEY.LEFT ) {
       cursor = Math.max ( 0, cursor - 1 );
-    } else if ( input === KEY.RIGHT ) {
+    } else if ( key === KEY.RIGHT ) {
       cursor = Math.min ( value.length, cursor + 1 );
-    } else if ( input === KEY.CTRL_A ) {
+    } else if ( sequence === SHORTCUT.CTRL_A ) {
       cursor = 0;
-    } else if ( input === KEY.CTRL_E ) {
+    } else if ( sequence === SHORTCUT.CTRL_E ) {
       cursor = value.length;
-    } else if ( input === KEY.BACKSPACE ) {
+    } else if ( key === KEY.BACKSPACE ) {
       pristine = false;
       value = `${value.slice ( 0, Math.max ( 0, cursor - 1 ) )}${value.slice ( cursor )}`;
       cursor = Math.max ( 0, cursor - 1 );
-    } else if ( input === KEY.DELETE ) {
+    } else if ( key === KEY.DELETE ) {
       pristine = false;
       value = `${value.slice ( 0, cursor )}${value.slice ( cursor + 1 )}`;
       cursor = Math.min ( value.length, cursor );
-    } else if ( isPrintable ( input ) ) {
+    } else if ( isPrintable ( sequence ) ) {
       pristine = false;
-      value = `${value.slice ( 0, cursor )}${input}${value.slice ( cursor )}`;
-      cursor = Math.min ( value.length, cursor + input.length );
+      value = `${value.slice ( 0, cursor )}${sequence}${value.slice ( cursor )}`;
+      cursor = Math.min ( value.length, cursor + sequence.length );
     }
     return [main, validation];
   });
