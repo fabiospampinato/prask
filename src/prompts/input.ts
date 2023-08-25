@@ -4,7 +4,7 @@
 import color from 'tiny-colors';
 import {KEY} from '../constants';
 import {identity, isPrintable, isString} from '../utils';
-import {statusSymbol, withCursor} from './_helpers';
+import {statusSymbol, warning, withCursor} from './_helpers';
 import prompt from './prompt';
 
 /* TYPES */
@@ -44,12 +44,12 @@ const input = <T> ( options: Options<T> ): Promise<T | undefined> => {
 
   const validation = (): string | undefined => {
     const missing = validating && required && !value;
-    if ( missing ) return color.yellow ( '⚠ Please provide a value' );
+    if ( missing ) return warning ( 'Please provide a value' );
     if ( !validating || !validate ) return;
     const result = validate ( value );
     if ( result === true ) return;
     const message = result || 'Invalid value';
-    return color.yellow ( `⚠ ${message}` );
+    return warning ( message );
   };
 
   /* PROMPT */

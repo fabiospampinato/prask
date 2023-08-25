@@ -5,7 +5,8 @@ import process from 'node:process';
 import color from 'tiny-colors';
 import {KEY} from '../constants';
 import {identity, isPrintable, isString} from '../utils';
-import {statusSymbol, withCursor} from './_helpers';
+import {statusSymbol, warning, withCursor} from './_helpers';
+import {SYMBOL_FOCUSED, SYMBOL_SELECTED, SYMBOL_UNSELECTED} from './_symbols';
 import prompt from './prompt';
 
 /* HELPERS */
@@ -68,7 +69,7 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
     return (): string => {
       const isSelected = selected.has ( option );
       const isFocused = ( filtered[focused] === option );
-      const _status = option.heading ? ' ' : ( multiple ? ( isSelected ? color.green ( '●' ) : '○' ) : ( isFocused ? color.cyan ( '❯' ) : ' ' ) );
+      const _status = option.heading ? ' ' : ( multiple ? ( isSelected ? color.green ( SYMBOL_SELECTED ) : SYMBOL_UNSELECTED ) : ( isFocused ? color.cyan ( SYMBOL_FOCUSED ) : ' ' ) );
       const _matchStart = option.title.toLowerCase ().indexOf ( query.toLowerCase () );
       const _matchEnd = _matchStart + query.length;
       const _match = query && _matchStart >= 0 && !option.heading ? `${option.title.slice ( 0, _matchStart )}${color.inverse ( option.title.slice ( _matchStart, _matchEnd ) )}${option.title.slice ( _matchEnd )}` : option.title;
@@ -81,14 +82,14 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
 
   const validation = (): string | undefined => {
     if ( !validating ) return;
-    if ( selected.size < min ) return color.yellow ( `⚠ Please select at least ${min} option${min !== 1 ? 's' : ''}` );
-    if ( selected.size > max ) return color.yellow ( `⚠ Please select at most ${max} option${max !== 1 ? 's' : ''}` );
+    if ( selected.size < min ) return warning ( `Please select at least ${min} option${min !== 1 ? 's' : ''}` );
+    if ( selected.size > max ) return warning ( `Please select at most ${max} option${max !== 1 ? 's' : ''}` );
     if ( !validate ) return;
     const results = options.filter ( option => selected.has ( option ) ); // To preserve the original order
     const result = validate ( results.map ( option => option.value ) );
     if ( result === true ) return;
     const message = result || 'Invalid selection';
-    return color.yellow ( `⚠ ${message}` );
+    return warning ( message );
   };
 
   /* PROMPT */

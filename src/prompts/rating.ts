@@ -4,6 +4,7 @@
 import color from 'tiny-colors';
 import {KEY} from '../constants';
 import {statusSymbol} from './_helpers';
+import {SYMBOL_SELECTED, SYMBOL_UNSELECTED} from './_symbols';
 import prompt from './prompt';
 
 /* TYPES */
@@ -21,8 +22,8 @@ const rating = ( options: Options ): Promise<Rating | undefined> => {
 
   /* CONSTANTS */
 
-  const STAR_ACTIVE = color.green ( '●' );
-  const STAR_INACTIVE = '○';
+  const STAR_ACTIVE = color.green ( SYMBOL_SELECTED );
+  const STAR_INACTIVE = SYMBOL_UNSELECTED;
   const STARS_DIVIDER = '─────';
   const LABELS_DIVIDER = '     ';
   const PADDING = '  ';
