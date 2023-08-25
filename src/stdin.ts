@@ -2,7 +2,7 @@
 /* IMPORT */
 
 import once from 'function-once';
-import {kill, pid, stdin} from 'node:process';
+import {kill, pid, stdin, stdout} from 'node:process';
 import readline from 'node:readline';
 import {SHORTCUT} from './constants';
 import type {Key as ReadlineKey, Interface as ReadlineInterface} from 'node:readline';
@@ -41,7 +41,7 @@ const Stdin = {
 
   listen: ( handler: ( key: Key ) => void ): (() => void) => {
 
-    const onKeypress = ( _: unknown, key: ReadlineKey ) => {
+    const onKeypress = ( _: unknown, key: ReadlineKey ): void => {
 
       if ( key.sequence === SHORTCUT.CTRL_C ) {
 
@@ -63,11 +63,22 @@ const Stdin = {
 
     };
 
+    const onResize = (): void => {
+
+      handler ({
+        key: '',
+        sequence: ''
+      });
+
+    };
+
     stdin.on ( 'keypress', onKeypress );
+    stdout.on ( 'resize', onResize );
 
     return (): void => {
 
       stdin.off ( 'keypress', onKeypress );
+      stdout.off ( 'resize', onResize );
 
     };
 
@@ -77,7 +88,17 @@ const Stdin = {
 
     return new Promise ( resolve => {
 
-      stdin.once ( 'keypress', resolve );
+      const onEvent = (): void => {
+
+        stdin.off ( 'keypress', onEvent );
+        stdout.off ( 'resize', onEvent );
+
+        resolve ();
+
+      };
+
+      stdin.once ( 'keypress', onEvent );
+      stdout.once ( 'resize', onEvent );
 
     });
 
