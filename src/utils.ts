@@ -31,6 +31,12 @@ const last = <T> ( values: T[] ): T => {
 
 };
 
+const sum = ( values: number[] ): number => {
+
+  return values.reduce ( ( sum, value ) => sum + value, 0 );
+
+};
+
 /* EXPORT */
 
-export {castArray, identity, isPrintable, isString, last};
+export {castArray, identity, isPrintable, isString, last, sum};

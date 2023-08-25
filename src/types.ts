@@ -6,9 +6,9 @@ type Key = {
   key: string,
   sequence: string,
   /* EXTRA */
-  ctrl: boolean,
-  meta: boolean,
-  shift: boolean
+  ctrl?: boolean,
+  meta?: boolean,
+  shift?: boolean
 };
 
 /* EXPORT */

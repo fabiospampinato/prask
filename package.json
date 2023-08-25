@@ -22,6 +22,7 @@
     "select"
   ],
   "dependencies": {
+    "ansi-purge": "^1.0.0",
     "function-once": "^3.0.0",
     "promise-make-naked": "^2.1.1",
     "tiny-colors": "^2.1.0",

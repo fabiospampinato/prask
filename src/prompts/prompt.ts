@@ -1,12 +1,13 @@
 
 /* IMPORT */
 
+import purge from 'ansi-purge';
 import NakedPromise from 'promise-make-naked';
 import Cursor from 'tiny-cursor';
 import process from 'node:process';
 import readline from 'node:readline';
 import Stdin from '../stdin';
-import {castArray, isString, last} from '../utils';
+import {castArray, isString, last, sum} from '../utils';
 import type {Key} from '../types';
 
 /* TYPES */
@@ -33,7 +34,7 @@ const prompt = <T> ( prompt: Prompt<T> ): Promise<T | undefined> => {
 
     /* STATE */
 
-    let keyInit: Key = { key: '', sequence: '', ctrl: false, meta: false, shift: false };
+    let keyInit: Key = { key: '', sequence: '' };
     let keys: Key[]= [keyInit];
     let linesNr = 1;
 
@@ -77,7 +78,10 @@ const prompt = <T> ( prompt: Prompt<T> ): Promise<T | undefined> => {
       }
 
       keys.length = 0;
-      linesNr = lines.length;
+
+      const lineWidth = process.stdout.getWindowSize ()[0];
+
+      linesNr = sum ( lines.map ( line => Math.max ( 1, Math.ceil ( purge ( line ).length / lineWidth ) ) ) );
 
       /* SETTLED */
 
