@@ -114,11 +114,13 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
       }
     } else if ( key === KEY.SPACE && multiple ) {
       const option = filtered[focused];
-      if ( !option.disabled && !option.heading ) {
-        if ( selected.has ( option ) ) {
-          selected.delete ( option );
-        } else {
-          selected.add ( option );
+      if ( option ) {
+        if ( !option.disabled && !option.heading ) {
+          if ( selected.has ( option ) ) {
+            selected.delete ( option );
+          } else {
+            selected.add ( option );
+          }
         }
       }
     } else if ( key === KEY.UP ) {
