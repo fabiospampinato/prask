@@ -6,7 +6,7 @@ import Cursor from 'tiny-cursor';
 import process from 'node:process';
 import readline from 'node:readline';
 import Stdin from '../stdin';
-import {castArray, isString} from '../utils';
+import {castArray, isString, last} from '../utils';
 import type {Key} from '../types';
 
 /* TYPES */
@@ -45,9 +45,7 @@ const prompt = <T> ( prompt: Prompt<T> ): Promise<T | undefined> => {
 
     while ( true ) {
 
-      const key = keys.shift ();
-
-      if ( !key ) break;
+      if ( !keys.length ) break;
 
       /* RESET CURSOR */
 
@@ -56,7 +54,7 @@ const prompt = <T> ( prompt: Prompt<T> ): Promise<T | undefined> => {
 
       /* RE-RENDER */
 
-      const lines = castArray ( prompt ( resolve, key ) ).map ( line => line () ).filter ( isString );
+      const lines = castArray ( last ( keys.map ( key => prompt ( resolve, key ) ) ) ).map ( line => line () ).filter ( isString );
 
       for ( let i = 0, l = lines.length; i < l; i++ ) {
 
@@ -78,6 +76,7 @@ const prompt = <T> ( prompt: Prompt<T> ): Promise<T | undefined> => {
 
       }
 
+      keys.length = 0;
       linesNr = lines.length;
 
       /* SETTLED */
@@ -85,8 +84,6 @@ const prompt = <T> ( prompt: Prompt<T> ): Promise<T | undefined> => {
       if ( !isPending () ) break;
 
       /* NEXT ITERATION */
-
-      if ( keys.length ) continue;
 
       await Stdin.wait ();
 

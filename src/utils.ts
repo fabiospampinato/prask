@@ -25,6 +25,12 @@ const isString = ( value: unknown ): value is string => {
 
 };
 
+const last = <T> ( values: T[] ): T => {
+
+  return values[values.length - 1];
+
+};
+
 /* EXPORT */
 
-export {castArray, identity, isPrintable, isString};
+export {castArray, identity, isPrintable, isString, last};
