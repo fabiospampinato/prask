@@ -8,14 +8,14 @@ import pick, {type Option} from './pick';
 type Options<T> = {
   message: string,
   limit?: number,
-  options: Option<T>[],
+  options: Option<T>[] | string[],
   searchable?: boolean,
   validate?: ( value: T ) => string | boolean
 };
 
 /* MAIN */
 
-const select = <T> ( options: Options<T> ): Promise<T | undefined> => {
+const select = <T = string> ( options: Options<T> ): Promise<T | undefined> => {
 
   return pick ({
     ...options,

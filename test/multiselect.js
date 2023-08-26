@@ -9,6 +9,11 @@ import {COUNTRIES} from './_fixtures.js';
 
 await multiselect ({
   message: 'Which countries would you like to visit?',
+  options: COUNTRIES
+});
+
+await multiselect ({
+  message: 'Which countries would you like to visit?',
   options: COUNTRIES.map ( title => ({ title, value: title }) )
 });
 

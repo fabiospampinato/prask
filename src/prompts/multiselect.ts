@@ -10,14 +10,14 @@ type Options<T> = {
   limit?: number,
   min?: number,
   max?: number,
-  options: Option<T>[],
+  options: Option<T>[] | string[],
   searchable?: boolean,
   validate?: ( value: T[] ) => string | boolean
 };
 
 /* MAIN */
 
-const multiselect = <T> ( options: Options<T> ): Promise<T[] | undefined> => {
+const multiselect = <T = string> ( options: Options<T> ): Promise<T[] | undefined> => {
 
   return pick ({
     ...options,

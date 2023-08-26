@@ -19,7 +19,7 @@ type Options<T, U> = {
   max?: number,
   multiple?: boolean,
   searchable?: boolean,
-  options: Option<T>[],
+  options: Option<T>[] | string[],
   format?: ( value: string, status: -1 | 0 | 1 ) => string,
   transform?: ( value: T[] ) => U,
   validate?: ( value: T[] ) => string | boolean
@@ -44,13 +44,14 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
 
   /* STATE */
 
-  let {message, min = 0, max = Infinity, multiple = true, searchable = true, options, format = identity, transform = identity, validate} = _options;
+  let {message, min = 0, max = Infinity, multiple = true, searchable = true, format = identity, transform = identity, validate} = _options;
   let limit = Math.max ( 1, Math.min ( process.stdout.getWindowSize ()[1] - 2, _options.limit || 7 ) ); // Ensuring the prompt won't overflow the terminal
   let status: -1 | 0 | 1 = 0;
   let query = '';
   let cursor = 0;
   let validating = false;
-  let filtered: Option<T>[] = options;
+  let options: Option<T>[] = _options.options.map ( option => isString ( option ) ? { title: option, value: option as T } : option ); //TSC
+  let filtered = options;
   let selected: Set<Option<T>> = new Set ( filtered.filter ( option => !option.heading && option.selected ) );
   let visible = filtered.slice ( 0, limit );
   let focused = Math.max ( 0, Math.min ( visible.length - 1, _options.focused || 0 ) ); //TODO: Calculate the initial visible range based on this value
