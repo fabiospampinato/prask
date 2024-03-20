@@ -13,6 +13,7 @@ import prompt from './prompt';
 
 type PickOptions<T, U> = {
   message: string,
+  actions?: Partial<Record<string, ( state: PickState<T> ) => void>>,
   focused?: number,
   limit?: number,
   min?: number,
@@ -35,6 +36,15 @@ type PickOption<T> = {
   selected?: boolean
 };
 
+type PickState<T> = {
+  query: string,
+  cursor: number,
+  filtered: PickOption<T>[],
+  selected: Set<PickOption<T>>,
+  visible: PickOption<T>[],
+  focused: number
+};
+
 /* MAIN */
 
 //TODO: Make sure headings are not selectable
@@ -44,7 +54,7 @@ const pick = async <T, U> ( _options: PickOptions<T, U> ): Promise<U | undefined
 
   /* STATE */
 
-  let {message, min = 0, max = Infinity, multiple = true, searchable = true, format = identity, transform = identity, validate} = _options;
+  let {actions = {}, message, min = 0, max = Infinity, multiple = true, searchable = true, format = identity, transform = identity, validate} = _options;
   let limit = Math.max ( 1, Math.min ( process.stdout.getWindowSize ()[1] - 2, _options.limit || 7 ) ); // Ensuring the prompt won't overflow the terminal
   let status: -1 | 0 | 1 = 0;
   let query = '';
@@ -96,7 +106,17 @@ const pick = async <T, U> ( _options: PickOptions<T, U> ): Promise<U | undefined
   /* PROMPT */
 
   return prompt ( ( resolve, {key, sequence} ) => {
-    if ( key === KEY.ESCAPE ) {
+    const action = actions[sequence] || actions[key];
+    if ( action ) {
+      const state = { query, cursor, filtered, selected, visible, focused };
+      action ( state );
+      query = state.query;
+      cursor = state.cursor;
+      filtered = state.filtered;
+      selected = state.selected;
+      visible = state.visible;
+      focused = state.focused;
+    } else if ( key === KEY.ESCAPE ) {
       status = -1;
       resolve ();
       return main;
@@ -179,4 +199,4 @@ const pick = async <T, U> ( _options: PickOptions<T, U> ): Promise<U | undefined
 /* EXPORT */
 
 export default pick;
-export type {PickOptions, PickOption};
+export type {PickOptions, PickOption, PickState};
