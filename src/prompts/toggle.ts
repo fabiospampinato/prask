@@ -3,7 +3,7 @@
 
 import color from 'tiny-colors';
 import {KEY} from '../constants';
-import {statusSymbol} from './_helpers';
+import {getStatusSymbol} from './_helpers';
 import prompt from './prompt';
 
 /* TYPES */
@@ -26,7 +26,7 @@ const toggle = ( options: Options ): Promise<boolean | undefined> => {
   /* COMPONENTS */
 
   const main = (): string => {
-    const _status = statusSymbol ( status );
+    const _status = getStatusSymbol ( status );
     const _message = color.bold ( message );
     const _slash = color.dim ( '/' );
     const _no = ( value === false ) ? color.cyan.underline ( 'No' ) : 'No';

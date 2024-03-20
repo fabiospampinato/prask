@@ -334,14 +334,14 @@ const rating = ( options: Options ): Promise<Rating | undefined> => {
   // The "prompt" function takes care of cleaning up the previous output and replacing it with the new one
   // That's basically how the entire library works, the "prompt" function tells you when a key is pressed, and you just tell it what to render next
 
-  const statusSymbol = ( status ): string => {
+  const getStatusSymbol = ( status ): string => {
     if ( status < 0 ) return color.red ( '✖' );
     if ( status > 0 ) return color.green ( '✔' );
     return color.cyan.bold ( '?' );
   };
 
   const question = (): string => {
-    const question = `${statusSymbol ()} ${color.bold ( message )}`;
+    const question = `${getStatusSymbol ()} ${color.bold ( message )}`;
     const result = status === 1 ? color.cyan ( String ( current ) ) : '';
     return [question, result].join ( ' ' );
   };

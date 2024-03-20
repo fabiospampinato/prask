@@ -3,7 +3,7 @@
 
 import color from 'tiny-colors';
 import {KEY} from '../constants';
-import {statusSymbol} from './_helpers';
+import {getStatusSymbol} from './_helpers';
 import {SYMBOL_SELECTED, SYMBOL_UNSELECTED} from './_symbols';
 import prompt from './prompt';
 
@@ -37,7 +37,7 @@ const rating = ( options: Options ): Promise<Rating | undefined> => {
   /* COMPONENTS */
 
   const question = (): string => {
-    const question = `${statusSymbol ( status )} ${color.bold ( message )}`;
+    const question = `${getStatusSymbol ( status )} ${color.bold ( message )}`;
     const result = status === 1 ? color.cyan ( String ( current ) ) : '';
     return [question, result].join ( ' ' );
   };

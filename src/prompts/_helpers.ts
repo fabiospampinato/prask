@@ -18,12 +18,6 @@ const question = ( message: string ): string => {
   return `${color.cyan.bold ( SYMBOL_QUESTION )} ${message}`;
 };
 
-const statusSymbol = ( status: number ): string => {
-  if ( status < 0 ) return color.red ( SYMBOL_ERROR );
-  if ( status > 0 ) return color.green ( SYMBOL_SUCCESS );
-  return color.cyan.bold ( SYMBOL_QUESTION );
-};
-
 const success = ( message: string ): string => {
   return `${color.green ( SYMBOL_SUCCESS )} ${message}`;
 };
@@ -32,12 +26,30 @@ const warning = ( message: string ): string => {
   return `${color.yellow.bold ( SYMBOL_WARNING )} ${color.yellow ( message )}`;
 };
 
+const getPositionIndex = ( value: string, position: number ): number => { // This accounts for ANSI control sequences
+  const re = /([\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><])|(.)/g; // This splits the string into ANSI control sequences and normal characters
+  for ( const match of value.matchAll ( re ) ) {
+    if ( !match[2] ) continue;
+    position -= 1;
+    if ( position >= 0 ) continue;
+    return match.index || 0;
+  }
+  return -1;
+};
+
+const getStatusSymbol = ( status: number ): string => {
+  if ( status < 0 ) return color.red ( SYMBOL_ERROR );
+  if ( status > 0 ) return color.green ( SYMBOL_SUCCESS );
+  return color.cyan.bold ( SYMBOL_QUESTION );
+};
+
 const withCursor = ( value: string, position: number ): string => {
   if ( position < 0 ) return value;
-  if ( position >= value.length ) return `${value}${color.inverse ( ' ' )}`;
+  position = getPositionIndex ( value, position );
+  if ( position < 0 ) return `${value}${color.inverse ( ' ' )}`;
   return `${value.slice ( 0, position )}${color.inverse ( value.slice ( position, position + 1 ) )}${value.slice ( position + 1 )}`;
 };
 
 /* EXPORT */
 
-export {error, info, question, statusSymbol, success, warning, withCursor};
+export {error, info, question, success, warning, getPositionIndex, getStatusSymbol, withCursor};

@@ -4,7 +4,7 @@
 import color from 'tiny-colors';
 import {KEY, SHORTCUT} from '../constants';
 import {identity, isPrintable, isString} from '../utils';
-import {statusSymbol, warning, withCursor} from './_helpers';
+import {getStatusSymbol, warning, withCursor} from './_helpers';
 import prompt from './prompt';
 
 /* TYPES */
@@ -34,7 +34,7 @@ const input = <T> ( options: Options<T> ): Promise<T | undefined> => {
   /* COMPONENTS */
 
   const main = (): string => {
-    const _status = statusSymbol ( status );
+    const _status = getStatusSymbol ( status );
     const _message = color.bold ( message );
     const _initial = status === 0 && pristine && initial ? color.dim ( `(${initial})` ) : false;
     const _cursor = status === 0 ? cursor : -1;

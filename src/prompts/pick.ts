@@ -5,7 +5,7 @@ import process from 'node:process';
 import color from 'tiny-colors';
 import {KEY, SHORTCUT} from '../constants';
 import {identity, isPrintable, isString} from '../utils';
-import {statusSymbol, warning, withCursor} from './_helpers';
+import {getStatusSymbol, warning, withCursor} from './_helpers';
 import {SYMBOL_FOCUSED, SYMBOL_SELECTED, SYMBOL_UNSELECTED} from './_symbols';
 import prompt from './prompt';
 
@@ -59,7 +59,7 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
   /* COMPONENTS */
 
   const main = (): string => {
-    const _status = statusSymbol ( status );
+    const _status = getStatusSymbol ( status );
     const _message = color.bold ( message );
     const _cursor = status === 0 ? cursor : -1;
     const _query = ( status >= 0 && searchable ) || ( status === 1 && !searchable ) ? withCursor ( format ( query, status ), _cursor ) : '';
