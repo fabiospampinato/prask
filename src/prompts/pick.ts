@@ -20,7 +20,7 @@ type Options<T, U> = {
   multiple?: boolean,
   searchable?: boolean,
   options: Option<T>[] | string[],
-  format?: ( value: string, status: -1 | 0 | 1 ) => string,
+  format?: ( value: string, settled: boolean ) => string,
   transform?: ( value: T[] ) => U,
   validate?: ( value: T[] ) => string | boolean
 };
@@ -62,7 +62,7 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
     const _status = getStatusSymbol ( status );
     const _message = color.bold ( message );
     const _cursor = status === 0 ? cursor : -1;
-    const _query = ( status >= 0 && searchable ) || ( status === 1 && !searchable ) ? withCursor ( format ( query, status ), _cursor ) : '';
+    const _query = ( status >= 0 && searchable ) || ( status === 1 && !searchable ) ? withCursor ( format ( query, !!status ), _cursor ) : '';
     return [_status, _message, _query].join ( ' ' );
   };
 

@@ -9,6 +9,7 @@ type Options = {
   message: string,
   initial?: string,
   required?: boolean,
+  format?: ( value: string, settled: boolean ) => string,
   validate?: ( value: string ) => string | boolean
 };
 

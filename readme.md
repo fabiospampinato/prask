@@ -28,6 +28,7 @@ This prompt can be used to ask the user for a string value.
 
 ```ts
 import {string} from 'prask';
+import color from 'tiny-colors';
 
 const result = await string ({
   /* REQUIRED OPTIONS */
@@ -35,6 +36,7 @@ const result = await string ({
   /* OPTIONAL OPTIONS */
   initial: 'John Doe', // Optional default value, to allow the user to quickly press Enter for it
   required: true, // Whether a non-empty value for this prompt is required or not
+  format: ( value, settled ) => value.length >= 2 ? colors.green ( value ) : colors.red ( value ), // Optional formatting function, the visual length of the output string must remain the same
   validate: value => value.length >= 2 // Optional validation function
 });
 ```
@@ -103,12 +105,14 @@ This prompt can be used to ask the user for a numeric value.
 
 ```ts
 import {number} from 'prask';
+import colors from 'tiny-colors';
 
 const result = await number ({
   /* REQUIRED OPTIONS */
   message: 'What is your favorite even number?', // The message that the user will read
   /* OPTIONAL OPTIONS */
   initial: 42, // Optional default value, to allow the user to quickly press Enter for it
+  format: ( value, settled ) => ( value % 2 ) ? colors.red ( value ) : colors.green ( value ), // Optional formatting function, the visual length of the output string must remain the same
   validate: value => ( value % 2 ) ? 'The number must be even' : true // Optional validation function
 });
 ```
