@@ -1,7 +1,7 @@
 
 /* IMPORT */
 
-import purge from 'ansi-purge';
+import stringWidth from 'fast-string-width';
 import NakedPromise from 'promise-make-naked';
 import Cursor from 'tiny-cursor';
 import process from 'node:process';
@@ -81,7 +81,7 @@ const prompt = <T> ( prompt: Prompt<T> ): Promise<T | undefined> => {
 
       const lineWidth = process.stdout.getWindowSize ()[0];
 
-      linesNr = sum ( lines.map ( line => Math.max ( 1, Math.ceil ( purge ( line ).length / lineWidth ) ) ) );
+      linesNr = sum ( lines.map ( line => Math.max ( 1, Math.ceil ( stringWidth ( line ) / lineWidth ) ) ) );
 
       /* SETTLED */
 

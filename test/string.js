@@ -10,6 +10,10 @@ await string ({
 });
 
 await string ({
+  message: '古池や古池や古池や古池や古池や古池や古池や古池や古池や古池や?'
+});
+
+await string ({
   message: 'What is your name?',
   required: true
 });
