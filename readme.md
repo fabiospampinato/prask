@@ -117,7 +117,12 @@ const result = await number ({
 });
 ```
 
-It can be interacted with exactly like a `string` prompt, the only difference is that the value of the input is also automatically validated to be a number.
+It can be interacted with exactly like a `string` prompt, the main difference is that the value of the input is also automatically validated to be a number, plus the following extra interactions are supported:
+
+| Trigger       | Description                       |
+| ------------- | --------------------------------- |
+| `Up`/`Right`  | Increment the current value by 1. |
+| `Down`/`Left` | Decrement the current value by 1. |
 
 ### `multiselect`
 
