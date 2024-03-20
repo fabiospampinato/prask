@@ -11,11 +11,18 @@ import prompt from './prompt';
 
 type InputOptions<T> = {
   message: string,
+  actions?: Partial<Record<string, ( state: InputState ) => void>>,
   initial?: string,
   required?: boolean,
   format?: ( value: string, settled: boolean ) => string,
   transform?: ( value: string ) => T,
   validate?: ( value: string ) => string | boolean
+};
+
+type InputState = {
+  pristine: boolean,
+  value: string,
+  cursor: number
 };
 
 /* MAIN */
@@ -24,7 +31,7 @@ const input = <T> ( options: InputOptions<T> ): Promise<T | undefined> => {
 
   /* STATE */
 
-  let {message, initial, required, format = identity, transform = identity, validate} = options;
+  let {actions = {}, message, initial, required, format = identity, transform = identity, validate} = options;
   let pristine = true;
   let status: -1 | 0 | 1 = 0;
   let validating = false;
@@ -55,7 +62,14 @@ const input = <T> ( options: InputOptions<T> ): Promise<T | undefined> => {
   /* PROMPT */
 
   return prompt ( ( resolve, {key, sequence} ) => {
-    if ( key === KEY.ESCAPE ) {
+    const action = actions[sequence] || actions[key];
+    if ( action ) {
+      const state = { pristine, value, cursor };
+      action ( state );
+      pristine = state.pristine;
+      value = state.value;
+      cursor = state.cursor;
+    } else if ( key === KEY.ESCAPE ) {
       pristine = false;
       status = -1;
       resolve ();
@@ -102,4 +116,4 @@ const input = <T> ( options: InputOptions<T> ): Promise<T | undefined> => {
 /* EXPORT */
 
 export default input;
-export type {InputOptions};
+export type {InputOptions, InputState};
