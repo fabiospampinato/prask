@@ -8,14 +8,14 @@ import prompt from './prompt';
 
 /* TYPES */
 
-type Options = {
+type ToggleOptions = {
   message: string,
   initial?: boolean
 };
 
 /* MAIN */
 
-const toggle = ( options: Options ): Promise<boolean | undefined> => {
+const toggle = ( options: ToggleOptions ): Promise<boolean | undefined> => {
 
   /* STATE */
 
@@ -56,3 +56,4 @@ const toggle = ( options: Options ): Promise<boolean | undefined> => {
 /* EXPORT */
 
 export default toggle;
+export type {ToggleOptions};

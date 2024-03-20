@@ -5,7 +5,7 @@ import input from './input';
 
 /* TYPES */
 
-type Options = {
+type StringOptions = {
   message: string,
   initial?: string,
   required?: boolean,
@@ -15,7 +15,7 @@ type Options = {
 
 /* MAIN */
 
-const string = ( options: Options ): Promise<string | undefined> => {
+const string = ( options: StringOptions ): Promise<string | undefined> => {
 
   return input ( options );
 
@@ -24,3 +24,4 @@ const string = ( options: Options ): Promise<string | undefined> => {
 /* EXPORT */
 
 export default string;
+export type {StringOptions};

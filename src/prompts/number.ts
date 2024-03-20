@@ -6,7 +6,7 @@ import input from './input';
 
 /* TYPES */
 
-type Options = {
+type NumberOptions = {
   message: string,
   initial?: number,
   format?: ( value: string, settled: boolean ) => string,
@@ -17,7 +17,7 @@ type Options = {
 
 //TODO: Support incrementing/decrementing the value with up/down arrows
 
-const number = async ( options: Options ): Promise<number | undefined> => {
+const number = async ( options: NumberOptions ): Promise<number | undefined> => {
 
   return input ({
     message: options.message,
@@ -32,3 +32,4 @@ const number = async ( options: Options ): Promise<number | undefined> => {
 /* EXPORT */
 
 export default number;
+export type {NumberOptions};

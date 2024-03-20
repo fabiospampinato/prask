@@ -1,23 +1,26 @@
 
 /* IMPORT */
 
-import pick, {type Option} from './pick';
+import pick from './pick';
+import type {PickOption} from './pick';
 
 /* TYPES */
 
-type Options<T> = {
+type MultiselectOptions<T> = {
   message: string,
   limit?: number,
   min?: number,
   max?: number,
-  options: Option<T>[] | string[],
+  options: MultiselectOption<T>[] | string[],
   searchable?: boolean,
   validate?: ( value: T[] ) => string | boolean
 };
 
+type MultiselectOption<T> = PickOption<T>;
+
 /* MAIN */
 
-const multiselect = <T = string> ( options: Options<T> ): Promise<T[] | undefined> => {
+const multiselect = <T = string> ( options: MultiselectOptions<T> ): Promise<T[] | undefined> => {
 
   return pick ({
     ...options,
@@ -29,3 +32,4 @@ const multiselect = <T = string> ( options: Options<T> ): Promise<T[] | undefine
 /* EXPORT */
 
 export default multiselect;
+export type {MultiselectOptions, MultiselectOption};

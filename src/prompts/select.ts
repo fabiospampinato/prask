@@ -1,21 +1,24 @@
 
 /* IMPORT */
 
-import pick, {type Option} from './pick';
+import pick from './pick';
+import type {PickOption} from './pick';
 
 /* TYPES */
 
-type Options<T> = {
+type SelectOptions<T> = {
   message: string,
   limit?: number,
-  options: Option<T>[] | string[],
+  options: SelectOption<T>[] | string[],
   searchable?: boolean,
   validate?: ( value: T ) => string | boolean
 };
 
+type SelectOption<T> = PickOption<T>;
+
 /* MAIN */
 
-const select = <T = string> ( options: Options<T> ): Promise<T | undefined> => {
+const select = <T = string> ( options: SelectOptions<T> ): Promise<T | undefined> => {
 
   return pick ({
     ...options,
@@ -29,3 +32,4 @@ const select = <T = string> ( options: Options<T> ): Promise<T | undefined> => {
 /* EXPORT */
 
 export default select;
+export type {SelectOptions, SelectOption};

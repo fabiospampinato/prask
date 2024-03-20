@@ -12,17 +12,17 @@ import type {Key} from '../types';
 
 /* TYPES */
 
-type Component = {
+type PromptComponent = {
   (): string | undefined
 };
 
-type Prompt<T> = (
-  ( resolve: ( value?: T ) => void, key: Key ) => Component[] | Component
+type PromptPrompt<T> = (
+  ( resolve: ( value?: T ) => void, key: Key ) => PromptComponent[] | PromptComponent
 );
 
 /* MAIN */
 
-const prompt = <T> ( prompt: Prompt<T> ): Promise<T | undefined> => {
+const prompt = <T> ( prompt: PromptPrompt<T> ): Promise<T | undefined> => {
 
   return NakedPromise.wrap <T | undefined> ( async ({ resolve, isPending }) => {
 
@@ -113,3 +113,4 @@ const prompt = <T> ( prompt: Prompt<T> ): Promise<T | undefined> => {
 /* EXPORT */
 
 export default prompt;
+export type {PromptComponent, PromptPrompt};

@@ -5,7 +5,7 @@ import Spinner from 'tiny-spinner';
 
 /* TYPES */
 
-type Actions = {
+type SpinnerActions = {
   update: ( message: string ) => void,
   resolve: ( message: string ) => void,
   reject: ( message: string ) => void
@@ -13,7 +13,7 @@ type Actions = {
 
 /* MAIN */
 
-const spinner = ( fn: ( actions: Actions ) => void ): Promise<boolean> => {
+const spinner = ( fn: ( actions: SpinnerActions ) => void ): Promise<boolean> => {
 
   return new Promise ( async resolve => {
 
@@ -43,3 +43,4 @@ const spinner = ( fn: ( actions: Actions ) => void ): Promise<boolean> => {
 /* EXPORT */
 
 export default spinner;
+export type {SpinnerActions};

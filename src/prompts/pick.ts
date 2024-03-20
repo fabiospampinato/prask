@@ -11,7 +11,7 @@ import prompt from './prompt';
 
 /* HELPERS */
 
-type Options<T, U> = {
+type PickOptions<T, U> = {
   message: string,
   focused?: number,
   limit?: number,
@@ -19,13 +19,13 @@ type Options<T, U> = {
   max?: number,
   multiple?: boolean,
   searchable?: boolean,
-  options: Option<T>[] | string[],
+  options: PickOption<T>[] | string[],
   format?: ( value: string, settled: boolean ) => string,
   transform?: ( value: T[] ) => U,
   validate?: ( value: T[] ) => string | boolean
 };
 
-type Option<T> = {
+type PickOption<T> = {
   title: string,
   value: T,
   disabled?: boolean,
@@ -40,7 +40,7 @@ type Option<T> = {
 //TODO: Make sure headings are not selectable
 //TODO: Account for pre-colored searchable values
 
-const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> => {
+const pick = async <T, U> ( _options: PickOptions<T, U> ): Promise<U | undefined> => {
 
   /* STATE */
 
@@ -50,9 +50,9 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
   let query = '';
   let cursor = 0;
   let validating = false;
-  let options: Option<T>[] = _options.options.map ( option => isString ( option ) ? { title: option, value: option as T } : option ); //TSC
+  let options: PickOption<T>[] = _options.options.map ( option => isString ( option ) ? { title: option, value: option as T } : option ); //TSC
   let filtered = options;
-  let selected: Set<Option<T>> = new Set ( filtered.filter ( option => !option.heading && option.selected ) );
+  let selected: Set<PickOption<T>> = new Set ( filtered.filter ( option => !option.heading && option.selected ) );
   let visible = filtered.slice ( 0, limit );
   let focused = Math.max ( 0, Math.min ( visible.length - 1, _options.focused || 0 ) ); //TODO: Calculate the initial visible range based on this value
 
@@ -66,7 +66,7 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
     return [_status, _message, _query].join ( ' ' );
   };
 
-  const optionFor = ( option: Option<T> ) => {
+  const optionFor = ( option: PickOption<T> ) => {
     return (): string => {
       const isSelected = selected.has ( option );
       const isFocused = ( filtered[focused] === option );
@@ -179,4 +179,4 @@ const pick = async <T, U> ( _options: Options<T, U> ): Promise<U | undefined> =>
 /* EXPORT */
 
 export default pick;
-export type {Option};
+export type {PickOptions, PickOption};

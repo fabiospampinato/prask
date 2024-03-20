@@ -5,7 +5,7 @@ import input from './input';
 
 /* TYPES */
 
-type Options = {
+type InvisibleOptions = {
   message: string,
   initial?: string,
   required?: boolean,
@@ -14,7 +14,7 @@ type Options = {
 
 /* MAIN */
 
-const invisible = ( options: Options ): Promise<string | undefined> => {
+const invisible = ( options: InvisibleOptions ): Promise<string | undefined> => {
 
   return input ({
     ...options,
@@ -26,3 +26,4 @@ const invisible = ( options: Options ): Promise<string | undefined> => {
 /* EXPORT */
 
 export default invisible;
+export type {InvisibleOptions};

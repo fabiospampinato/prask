@@ -9,7 +9,7 @@ import prompt from './prompt';
 
 /* TYPES */
 
-type Options<T> = {
+type InputOptions<T> = {
   message: string,
   initial?: string,
   required?: boolean,
@@ -20,7 +20,7 @@ type Options<T> = {
 
 /* MAIN */
 
-const input = <T> ( options: Options<T> ): Promise<T | undefined> => {
+const input = <T> ( options: InputOptions<T> ): Promise<T | undefined> => {
 
   /* STATE */
 
@@ -102,3 +102,4 @@ const input = <T> ( options: Options<T> ): Promise<T | undefined> => {
 /* EXPORT */
 
 export default input;
+export type {InputOptions};

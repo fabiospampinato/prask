@@ -11,14 +11,14 @@ import prompt from './prompt';
 
 type Rating = 1 | 2 | 3 | 4 | 5;
 
-type Options = {
+type RatingOptions = {
   message: string,
   initial?: Rating
 };
 
 /* MAIN */
 
-const rating = ( options: Options ): Promise<Rating | undefined> => {
+const rating = ( options: RatingOptions ): Promise<Rating | undefined> => {
 
   /* CONSTANTS */
 
@@ -81,3 +81,4 @@ const rating = ( options: Options ): Promise<Rating | undefined> => {
 /* EXPORT */
 
 export default rating;
+export type {RatingOptions};

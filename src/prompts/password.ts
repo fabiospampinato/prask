@@ -6,7 +6,7 @@ import input from './input';
 
 /* TYPES */
 
-type Options = {
+type PasswordOptions = {
   message: string,
   initial?: string,
   required?: boolean,
@@ -15,7 +15,7 @@ type Options = {
 
 /* MAIN */
 
-const password = ( options: Options ): Promise<string | undefined> => {
+const password = ( options: PasswordOptions ): Promise<string | undefined> => {
 
   return input ({
     ...options,
@@ -31,3 +31,4 @@ const password = ( options: Options ): Promise<string | undefined> => {
 /* EXPORT */
 
 export default password;
+export type {PasswordOptions};

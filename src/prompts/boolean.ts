@@ -6,14 +6,14 @@ import pick from './pick';
 
 /* TYPES */
 
-type Options = {
+type BooleanOptions = {
   message: string,
   initial?: boolean
 };
 
 /* MAIN */
 
-const boolean = ( options: Options ): Promise<boolean | undefined> => {
+const boolean = ( options: BooleanOptions ): Promise<boolean | undefined> => {
 
   return pick ({
     ...options,
@@ -30,3 +30,4 @@ const boolean = ( options: Options ): Promise<boolean | undefined> => {
 /* EXPORT */
 
 export default boolean;
+export type {BooleanOptions};
