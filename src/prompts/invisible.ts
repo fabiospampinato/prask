@@ -1,6 +1,7 @@
 
 /* IMPORT */
 
+import {identity} from '../utils';
 import input from './input';
 
 /* TYPES */
@@ -18,7 +19,8 @@ const invisible = ( options: InvisibleOptions ): Promise<string | undefined> => 
 
   return input ({
     ...options,
-    format: () => ''
+    format: () => '',
+    transform: identity
   });
 
 };

@@ -15,7 +15,7 @@ type InputOptions<T> = {
   initial?: string,
   required?: boolean,
   format?: ( value: string, settled: boolean ) => string,
-  transform?: ( value: string ) => T,
+  transform: ( value: string ) => T,
   validate?: ( value: string ) => string | boolean
 };
 
@@ -31,7 +31,7 @@ const input = <T> ( options: InputOptions<T> ): Promise<T | undefined> => {
 
   /* STATE */
 
-  let {actions = {}, message, initial, required, format = identity, transform = identity, validate} = options;
+  let {actions = {}, message, initial, required, format = identity, transform, validate} = options;
   let pristine = true;
   let status: -1 | 0 | 1 = 0;
   let validating = false;
@@ -80,7 +80,7 @@ const input = <T> ( options: InputOptions<T> ): Promise<T | undefined> => {
       validating = true;
       if ( !validation () ) {
         status = 1;
-        resolve ( transform ( value as any ) ); //TSC: Try to type this right
+        resolve ( transform ( value ) );
         return main;
       }
     } else if ( key === KEY.TAB && pristine ) {

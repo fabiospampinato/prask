@@ -1,6 +1,7 @@
 
 /* IMPORT */
 
+import {identity} from '../utils';
 import pick from './pick';
 import type {PickOption} from './pick';
 
@@ -24,7 +25,8 @@ const multiselect = <T = string> ( options: MultiselectOptions<T> ): Promise<T[]
 
   return pick ({
     ...options,
-    multiple: true
+    multiple: true,
+    transform: identity
   });
 
 };

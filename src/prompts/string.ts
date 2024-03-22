@@ -1,6 +1,7 @@
 
 /* IMPORT */
 
+import {identity} from '../utils';
 import input from './input';
 
 /* TYPES */
@@ -17,7 +18,10 @@ type StringOptions = {
 
 const string = ( options: StringOptions ): Promise<string | undefined> => {
 
-  return input ( options );
+  return input ({
+    ...options,
+    transform: identity
+  });
 
 };
 

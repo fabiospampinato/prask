@@ -9,7 +9,7 @@ import {getStatusSymbol, warning, withCursor} from './_helpers';
 import {SYMBOL_FOCUSED, SYMBOL_SELECTED, SYMBOL_UNSELECTED} from './_symbols';
 import prompt from './prompt';
 
-/* HELPERS */
+/* TYPES */
 
 type PickOptions<T, U> = {
   message: string,
@@ -22,7 +22,7 @@ type PickOptions<T, U> = {
   searchable?: boolean,
   options: PickOption<T>[] | string[],
   format?: ( value: string, settled: boolean ) => string,
-  transform?: ( value: T[] ) => U,
+  transform: ( value: T[] ) => U,
   validate?: ( value: T[] ) => string | boolean
 };
 
@@ -54,7 +54,7 @@ const pick = async <T, U> ( _options: PickOptions<T, U> ): Promise<U | undefined
 
   /* STATE */
 
-  let {actions = {}, message, min = 0, max = Infinity, multiple = true, searchable = true, format = identity, transform = identity, validate} = _options;
+  let {actions = {}, message, min = 0, max = Infinity, multiple = true, searchable = true, format = identity, transform, validate} = _options;
   let limit = Math.max ( 1, Math.min ( process.stdout.getWindowSize ()[1] - 2, _options.limit || 7 ) ); // Ensuring the prompt won't overflow the terminal
   let status: -1 | 0 | 1 = 0;
   let query = '';
@@ -130,7 +130,7 @@ const pick = async <T, U> ( _options: PickOptions<T, U> ): Promise<U | undefined
         const values = results.map ( option => option.value );
         status = 1;
         query = titles.join ( color.dim ( ', ' ) );
-        resolve ( transform ( values as any ) ); //TSC: Try to type this right
+        resolve ( transform ( values ) );
         return main;
       }
     } else if ( key === KEY.SPACE && multiple ) {
