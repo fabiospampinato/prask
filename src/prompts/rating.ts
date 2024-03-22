@@ -16,6 +16,16 @@ type RatingOptions = {
   initial?: Rating
 };
 
+/* HELPERS */
+
+const castRating = ( value: number ): Rating => {
+  if ( value < 2 ) return 1;
+  if ( value < 3 ) return 2;
+  if ( value < 4 ) return 3;
+  if ( value < 5 ) return 4;
+  return 5;
+};
+
 /* MAIN */
 
 const rating = ( options: RatingOptions ): Promise<Rating | undefined> => {
@@ -69,9 +79,9 @@ const rating = ( options: RatingOptions ): Promise<Rating | undefined> => {
       resolve ( current );
       return question;
     } else if ( key === KEY.LEFT || key === KEY.DOWN ) {
-      current = Math.max ( 1, current - 1 ) as Rating; //TSC
+      current = castRating ( current - 1 );
     } else if ( key === KEY.RIGHT || key === KEY.UP ) {
-      current = Math.min ( 5, current + 1 ) as Rating; //TSC
+      current = castRating ( current + 1 );
     }
     return [question, stars, labels];
   });
