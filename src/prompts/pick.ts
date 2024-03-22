@@ -40,7 +40,7 @@ type PickState<T> = {
   query: string,
   cursor: number,
   filtered: PickOption<T>[],
-  selected: Set<PickOption<T>>,
+  selected: Set<T>,
   visible: PickOption<T>[],
   focused: number
 };
@@ -60,9 +60,9 @@ const pick = async <T, U> ( _options: PickOptions<T, U> ): Promise<U | undefined
   let query = '';
   let cursor = 0;
   let validating = false;
-  let options: PickOption<T>[] = _options.options.map ( option => isString ( option ) ? { title: option, value: option as T } : option ); //TSC
+  let options = _options.options.map ( option => isString ( option ) ? { title: option, value: option as T } : option ); //TSC
   let filtered = options;
-  let selected: Set<PickOption<T>> = new Set ( filtered.filter ( option => !option.heading && option.selected ) );
+  let selected = new Set ( filtered.filter ( option => !option.heading && option.selected ).map ( option => option.value ) );
   let visible = filtered.slice ( 0, limit );
   let focused = Math.max ( 0, Math.min ( visible.length - 1, _options.focused || 0 ) ); //TODO: Calculate the initial visible range based on this value
 
@@ -78,7 +78,7 @@ const pick = async <T, U> ( _options: PickOptions<T, U> ): Promise<U | undefined
 
   const optionFor = ( option: PickOption<T> ) => {
     return (): string => {
-      const isSelected = selected.has ( option );
+      const isSelected = selected.has ( option.value );
       const isFocused = ( filtered[focused] === option );
       const _status = option.heading ? ' ' : ( multiple ? ( isSelected ? color.green ( SYMBOL_SELECTED ) : SYMBOL_UNSELECTED ) : ( isFocused ? color.cyan ( SYMBOL_FOCUSED ) : ' ' ) );
       const _matchStart = option.title.toLowerCase ().indexOf ( query.toLowerCase () );
@@ -96,7 +96,7 @@ const pick = async <T, U> ( _options: PickOptions<T, U> ): Promise<U | undefined
     if ( selected.size < min ) return warning ( `Please select at least ${min} option${min !== 1 ? 's' : ''}` );
     if ( selected.size > max ) return warning ( `Please select at most ${max} option${max !== 1 ? 's' : ''}` );
     if ( !validate ) return;
-    const results = options.filter ( option => selected.has ( option ) ); // To preserve the original order
+    const results = options.filter ( option => selected.has ( option.value ) ); // To preserve the original order
     const result = validate ( results.map ( option => option.value ) );
     if ( result === true ) return;
     const message = result || 'Invalid selection';
@@ -122,10 +122,10 @@ const pick = async <T, U> ( _options: PickOptions<T, U> ): Promise<U | undefined
       return main;
     } else if ( key === KEY.ENTER || ( key === KEY.SPACE && !multiple ) ) {
       const option = filtered[focused];
-      selected = multiple || !option || option.disabled || option.heading ? selected : new Set ([ option ]);
+      selected = multiple || !option || option.disabled || option.heading ? selected : new Set ([ option.value ]);
       validating = true;
       if ( !validation () ) {
-        const results = options.filter ( option => selected.has ( option ) ); // To preserve the original order
+        const results = options.filter ( option => selected.has ( option.value ) ); // To preserve the original order
         const titles = results.map ( option => option.title );
         const values = results.map ( option => option.value );
         status = 1;
@@ -137,10 +137,10 @@ const pick = async <T, U> ( _options: PickOptions<T, U> ): Promise<U | undefined
       const option = filtered[focused];
       if ( option ) {
         if ( !option.disabled && !option.heading ) {
-          if ( selected.has ( option ) ) {
-            selected.delete ( option );
+          if ( selected.has ( option.value ) ) {
+            selected.delete ( option.value );
           } else {
-            selected.add ( option );
+            selected.add ( option.value );
           }
         }
       }
