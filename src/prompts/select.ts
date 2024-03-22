@@ -9,7 +9,7 @@ import type {PickOption} from './pick';
 type SelectOptions<T> = {
   message: string,
   limit?: number,
-  options: SelectOption<T>[] | string[],
+  options: (( query?: string ) => SelectOption<T>[] | string[]) | SelectOption<T>[] | string[],
   searchable?: boolean,
   validate?: ( value: T ) => string | boolean
 };

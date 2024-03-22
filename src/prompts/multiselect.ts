@@ -12,7 +12,7 @@ type MultiselectOptions<T> = {
   limit?: number,
   min?: number,
   max?: number,
-  options: MultiselectOption<T>[] | string[],
+  options: (( query?: string ) => MultiselectOption<T>[] | string[]) | MultiselectOption<T>[] | string[],
   searchable?: boolean,
   validate?: ( value: T[] ) => string | boolean
 };

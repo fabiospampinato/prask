@@ -80,3 +80,22 @@ await multiselect ({
   ],
   limit: Infinity
 });
+
+await multiselect ({
+  message: 'Which dynamic option do you want?',
+  options: query => {
+    query ||= 'x';
+    return [
+      query.repeat ( 1 ),
+      query.repeat ( 2 ),
+      query.repeat ( 3 ),
+      query.repeat ( 4 ),
+      query.repeat ( 5 ),
+      query.repeat ( 6 ),
+      query.repeat ( 7 ),
+      query.repeat ( 8 ),
+      query.repeat ( 9 ),
+      query.repeat ( 10 )
+    ];
+  }
+});

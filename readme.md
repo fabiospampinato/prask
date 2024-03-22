@@ -168,6 +168,8 @@ type Option<T> = {
 };
 ```
 
+Options can be provided dynamically also, with a function that returns an array of options depending on the current query. That can also be used to customize how results are searched and ranked.
+
 Interactions:
 
 | Trigger | Description                                                                            |

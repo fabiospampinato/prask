@@ -13,6 +13,12 @@ const identity = <T> ( value: T ): T => {
 
 };
 
+const isFunction = ( value: unknown ): value is Function => {
+
+  return typeof value === 'function';
+
+};
+
 const isPrintable = ( value: string ): boolean => {
 
   return !!value && !value.startsWith ( '\x1B' );
@@ -39,4 +45,4 @@ const sum = ( values: number[] ): number => {
 
 /* EXPORT */
 
-export {castArray, identity, isPrintable, isString, last, sum};
+export {castArray, identity, isFunction, isPrintable, isString, last, sum};

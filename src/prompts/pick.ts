@@ -4,7 +4,7 @@
 import process from 'node:process';
 import color from 'tiny-colors';
 import {KEY, SHORTCUT} from '../constants';
-import {identity, isPrintable, isString} from '../utils';
+import {identity, isFunction, isPrintable, isString} from '../utils';
 import {getStatusSymbol, warning, withCursor} from './_helpers';
 import {SYMBOL_FOCUSED, SYMBOL_SELECTED, SYMBOL_UNSELECTED} from './_symbols';
 import prompt from './prompt';
@@ -20,7 +20,7 @@ type PickOptions<T, U> = {
   max?: number,
   multiple?: boolean,
   searchable?: boolean,
-  options: PickOption<T>[] | string[],
+  options: (( query?: string ) => PickOption<T>[] | string[]) | PickOption<T>[] | string[],
   format?: ( value: string, settled: boolean ) => string,
   transform: ( value: T[] ) => U,
   validate?: ( value: T[] ) => string | boolean
@@ -49,18 +49,30 @@ type PickState<T> = {
 
 //TODO: Make sure headings are not selectable
 //TODO: Account for pre-colored searchable values
+//TODO: Support "options" to be a function that returns a promise too, maybe
+//TODO: Support a fustom search function, maybe
 
 const pick = async <T, U> ( _options: PickOptions<T, U> ): Promise<U | undefined> => {
+
+  /* HELPERS */
+
+  const getOptions = (): PickOption<T>[] => {
+    const result = isFunction ( _options.options ) ? _options.options ( query ) : _options.options;
+    const options = result.map ( option => isString ( option ) ? { title: option, value: option as T } : option ); //TSC
+    return options;
+  };
 
   /* STATE */
 
   let {actions = {}, message, min = 0, max = Infinity, multiple = true, searchable = true, format = identity, transform, validate} = _options;
   let limit = Math.max ( 1, Math.min ( process.stdout.getWindowSize ()[1] - 2, _options.limit || 7 ) ); // Ensuring the prompt won't overflow the terminal
   let status: -1 | 0 | 1 = 0;
+  let dynamic = isFunction ( _options.options ) && !!_options.options.length;
   let query = '';
+  let queryable = searchable || dynamic;
   let cursor = 0;
   let validating = false;
-  let options = _options.options.map ( option => isString ( option ) ? { title: option, value: option as T } : option ); //TSC
+  let options = getOptions ();
   let filtered = options;
   let selected = new Set ( filtered.filter ( option => !option.heading && option.selected ).map ( option => option.value ) );
   let visible = filtered.slice ( 0, limit );
@@ -83,7 +95,7 @@ const pick = async <T, U> ( _options: PickOptions<T, U> ): Promise<U | undefined
       const _status = option.heading ? ' ' : ( multiple ? ( isSelected ? color.green ( SYMBOL_SELECTED ) : SYMBOL_UNSELECTED ) : ( isFocused ? color.cyan ( SYMBOL_FOCUSED ) : ' ' ) );
       const _matchStart = option.title.toLowerCase ().indexOf ( query.toLowerCase () );
       const _matchEnd = _matchStart + query.length;
-      const _match = query && _matchStart >= 0 && !option.heading ? `${option.title.slice ( 0, _matchStart )}${color.inverse ( option.title.slice ( _matchStart, _matchEnd ) )}${option.title.slice ( _matchEnd )}` : option.title;
+      const _match = searchable && query && _matchStart >= 0 && !option.heading ? `${option.title.slice ( 0, _matchStart )}${color.inverse ( option.title.slice ( _matchStart, _matchEnd ) )}${option.title.slice ( _matchEnd )}` : option.title;
       const _title = isFocused ? ( option.disabled ? color.dim.strikethrough.underline ( _match ) : color.cyan.underline ( _match ) ) : ( option.disabled ? color.dim.strikethrough ( _match ) : _match );
       const _description = option.description ? color.dim ( option.description ) : false;
       const _hint = option.hint && isFocused ? color.dim ( option.hint ) : false;
@@ -164,30 +176,33 @@ const pick = async <T, U> ( _options: PickOptions<T, U> ): Promise<U | undefined
         const visibleStartNext = Math.max ( 0, visibleEndNext - limit );
         visible = filtered.slice ( visibleStartNext, visibleEndNext );
       }
-    } else if ( key === KEY.LEFT && searchable ) {
+    } else if ( key === KEY.LEFT && queryable ) {
       cursor = Math.max ( 0, cursor - 1 );
-    } else if ( key === KEY.RIGHT && searchable ) {
+    } else if ( key === KEY.RIGHT && queryable ) {
       cursor = Math.min ( query.length, cursor + 1 );
-    } else if ( sequence === SHORTCUT.CTRL_A && searchable ) {
+    } else if ( sequence === SHORTCUT.CTRL_A && queryable ) {
       cursor = 0;
-    } else if ( sequence === SHORTCUT.CTRL_E && searchable ) {
+    } else if ( sequence === SHORTCUT.CTRL_E && queryable ) {
       cursor = query.length;
-    } else if ( key === KEY.BACKSPACE && searchable ) {
+    } else if ( key === KEY.BACKSPACE && queryable ) {
       query = `${query.slice ( 0, Math.max ( 0, cursor - 1 ) )}${query.slice ( cursor )}`;
       cursor = Math.max ( 0, cursor - 1 );
-      filtered = options.filter ( option => option.heading || option.title.toLowerCase ().includes ( query.toLowerCase () ) );
+      options = dynamic ? getOptions () : options;
+      filtered = searchable ? options.filter ( option => option.heading || option.title.toLowerCase ().includes ( query.toLowerCase () ) ) : options;
       visible = filtered.slice ( 0, limit );
       focused = 0;
-    } else if ( key === KEY.DELETE && searchable ) {
+    } else if ( key === KEY.DELETE && queryable ) {
       query = `${query.slice ( 0, cursor )}${query.slice ( cursor + 1 )}`;
       cursor = Math.min ( query.length, cursor );
-      filtered = options.filter ( option => option.heading || option.title.toLowerCase ().includes ( query.toLowerCase () ) );
+      options = dynamic ? getOptions () : options;
+      filtered = searchable ? options.filter ( option => option.heading || option.title.toLowerCase ().includes ( query.toLowerCase () ) ) : options;
       visible = filtered.slice ( 0, limit );
       focused = 0;
-    } else if ( isPrintable ( sequence ) && searchable ) {
+    } else if ( isPrintable ( sequence ) && queryable ) {
       query = `${query.slice ( 0, cursor )}${sequence}${query.slice ( cursor )}`;
       cursor = Math.min ( query.length, cursor + sequence.length );
-      filtered = filtered.filter ( option => option.heading || option.title.toLowerCase ().includes ( query.toLowerCase () ) );
+      options = dynamic ? getOptions () : options;
+      filtered = searchable ? options.filter ( option => option.heading || option.title.toLowerCase ().includes ( query.toLowerCase () ) ) : options;
       visible = filtered.slice ( 0, limit );
       focused = 0;
     }
