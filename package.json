@@ -22,12 +22,12 @@
     "select"
   ],
   "dependencies": {
-    "fast-string-width": "^1.0.5",
-    "function-once": "^3.0.0",
-    "promise-make-naked": "^2.1.1",
-    "tiny-colors": "^2.1.0",
-    "tiny-cursor": "^2.0.0",
-    "tiny-spinner": "^2.0.3"
+    "fast-string-width": "^1.1.0",
+    "function-once": "^3.0.1",
+    "promise-make-naked": "^2.1.2",
+    "tiny-colors": "^2.2.2",
+    "tiny-cursor": "^2.0.1",
+    "tiny-spinner": "^2.0.5"
   },
   "devDependencies": {
     "@types/node": "^20.4.9",
