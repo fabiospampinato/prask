@@ -22,7 +22,7 @@
     "select"
   ],
   "dependencies": {
-    "fast-string-width": "^2.0.0",
+    "fast-string-width": "^3.0.1",
     "function-once": "^3.0.1",
     "promise-make-naked": "^2.1.2",
     "tiny-colors": "^2.2.2",
