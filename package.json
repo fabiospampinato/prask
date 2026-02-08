@@ -22,16 +22,16 @@
     "select"
   ],
   "dependencies": {
-    "fast-string-width": "^3.0.1",
+    "fast-string-width": "^3.0.2",
     "function-once": "^3.0.1",
-    "promise-make-naked": "^2.1.2",
+    "promise-make-naked": "^3.0.2",
     "tiny-colors": "^2.2.2",
     "tiny-cursor": "^2.0.1",
     "tiny-spinner": "^2.0.5"
   },
   "devDependencies": {
-    "@types/node": "^20.4.9",
-    "tsex": "^3.0.1",
-    "typescript": "^5.1.6"
+    "@types/node": "^18.19.130",
+    "tsex": "^4.0.2",
+    "typescript": "^5.9.3"
   }
 }

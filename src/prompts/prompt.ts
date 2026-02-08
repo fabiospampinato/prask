@@ -2,7 +2,7 @@
 /* IMPORT */
 
 import stringWidth from 'fast-string-width';
-import NakedPromise from 'promise-make-naked';
+import makeNakedPromise from 'promise-make-naked';
 import Cursor from 'tiny-cursor';
 import process from 'node:process';
 import readline from 'node:readline';
@@ -22,91 +22,93 @@ type PromptPrompt<T> = (
 
 /* MAIN */
 
-const prompt = <T> ( prompt: PromptPrompt<T> ): Promise<T | undefined> => {
+const prompt = async <T> ( prompt: PromptPrompt<T> ): Promise<T | undefined> => {
 
-  return NakedPromise.wrap <T | undefined> ( async ({ resolve, isPending }) => {
+  const {promise, resolve, isPending} = makeNakedPromise<T | undefined>();
 
-    /* INIT */
+  /* INIT */
 
-    Cursor.hide ();
-    Stdin.init ();
-    Stdin.start ();
+  Cursor.hide ();
+  Stdin.init ();
+  Stdin.start ();
 
-    /* STATE */
+  /* STATE */
 
-    let keyInit: Key = { key: '', sequence: '' };
-    let keys: Key[]= [keyInit];
-    let linesNr = 1;
+  let keyInit: Key = { key: '', sequence: '' };
+  let keys: Key[]= [keyInit];
+  let linesNr = 1;
 
-    /* LISTEN */
+  /* LISTEN */
 
-    const unlisten = Stdin.listen ( key => keys.push ( key ) );
+  const unlisten = Stdin.listen ( key => keys.push ( key ) );
 
-    /* RENDER LOOP */
+  /* RENDER LOOP */
 
-    while ( true ) {
+  while ( true ) {
 
-      if ( !keys.length ) break;
+    if ( !keys.length ) break;
 
-      /* RESET CURSOR */
+    /* RESET CURSOR */
 
-      readline.moveCursor ( process.stdout, 0, - linesNr + 1 );
-      readline.cursorTo ( process.stdout, 0 );
+    readline.moveCursor ( process.stdout, 0, - linesNr + 1 );
+    readline.cursorTo ( process.stdout, 0 );
 
-      /* RE-RENDER */
+    /* RE-RENDER */
 
-      const lines = castArray ( last ( keys.map ( key => prompt ( resolve, key ) ) ) ).map ( line => line () ).filter ( isString );
+    const lines = castArray ( last ( keys.map ( key => prompt ( resolve, key ) ) ) ).map ( line => line () ).filter ( isString );
 
-      for ( let i = 0, l = lines.length; i < l; i++ ) {
+    for ( let i = 0, l = lines.length; i < l; i++ ) {
 
-        const lineNext = lines[i];
+      const lineNext = lines[i];
 
-        process.stdout.write ( lineNext );
+      process.stdout.write ( lineNext );
 
-        readline.clearLine ( process.stdout, 1 );
+      readline.clearLine ( process.stdout, 1 );
 
-        if ( i < l - 1 ) {
+      if ( i < l - 1 ) {
 
-          process.stdout.write ( '\r\n' );
+        process.stdout.write ( '\r\n' );
 
-        } else {
+      } else {
 
-          readline.clearScreenDown ( process.stdout );
-
-        }
+        readline.clearScreenDown ( process.stdout );
 
       }
 
-      keys.length = 0;
-
-      const lineWidth = process.stdout.getWindowSize ()[0];
-
-      linesNr = sum ( lines.map ( line => Math.max ( 1, Math.ceil ( stringWidth ( line ) / lineWidth ) ) ) );
-
-      /* SETTLED */
-
-      if ( !isPending () ) break;
-
-      /* NEXT ITERATION */
-
-      await Stdin.wait ();
-
     }
 
-    /* UNLISTEN */
+    keys.length = 0;
 
-    unlisten ();
+    const lineWidth = process.stdout.getWindowSize ()[0];
 
-    /* RESET */
+    linesNr = sum ( lines.map ( line => Math.max ( 1, Math.ceil ( stringWidth ( line ) / lineWidth ) ) ) );
 
-    Stdin.stop ();
-    Cursor.show ();
+    /* SETTLED */
 
-    /* CLENAUP */
+    if ( !isPending () ) break;
 
-    process.stdout.write ( '\r\n' );
+    /* NEXT ITERATION */
 
-  });
+    await Stdin.wait ();
+
+  }
+
+  /* UNLISTEN */
+
+  unlisten ();
+
+  /* RESET */
+
+  Stdin.stop ();
+  Cursor.show ();
+
+  /* CLEANUP */
+
+  process.stdout.write ( '\r\n' );
+
+  /* RETURN */
+
+  return promise;
 
 };
 
