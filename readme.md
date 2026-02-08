@@ -5,7 +5,7 @@ Lightweight prompting library for terminal apps.
 ## Install
 
 ```sh
-npm install --save prask
+npm install prask
 ```
 
 ## Prompts
