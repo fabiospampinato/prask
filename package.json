@@ -2,6 +2,7 @@
   "name": "prask",
   "repository": "github:fabiospampinato/prask",
   "description": "Lightweight prompting library for terminal apps.",
+  "license": "MIT",
   "version": "2.2.3",
   "type": "module",
   "sideEffects": false,
