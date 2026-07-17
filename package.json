@@ -16,7 +16,7 @@
     "prepublishOnly": "tsex prepare"
   },
   "keywords": [
-    "propmpt",
+    "prompt",
     "question",
     "ask",
     "input",
