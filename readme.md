@@ -164,7 +164,7 @@ type Option<T> = {
   description?: string, // The description that will be showed next to the title
   heading?: boolean, // Whether this option is an unselectable heading or not
   hint?: string, // The description that will be showed next to the title, only when the item is focused
-  selected?: boolean // Whether this option is pre-selected or not
+  selected?: boolean // Whether this option is preselected or not
 };
 ```
 
